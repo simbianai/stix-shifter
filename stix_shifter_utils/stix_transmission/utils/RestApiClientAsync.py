@@ -11,7 +11,7 @@ import threading
 import uuid
 
 from stix_shifter_utils.utils import logger
- 
+
 # This is a simple HTTP client that can be used to access the REST API
 
 RETRY_MAX_DEFAULT = 1
@@ -47,35 +47,49 @@ class RestApiClientAsync:
     #  True -- do proper signed cert check that is in trust store,
     #  False -- skip all cert checks,
     #  or The String content of your self signed cert required for TLS communication
-    def __init__(self, host, port=None, headers={}, url_modifier_function=None, cert_verify=None,  auth=None):
-        self.retry_max = os.getenv('STIXSHIFTER_RETRY_MAX', RETRY_MAX_DEFAULT)
+    def __init__(
+        self,
+        host,
+        port=None,
+        headers={},
+        url_modifier_function=None,
+        cert_verify=None,
+        auth=None,
+    ):
+        self.retry_max = os.getenv("STIXSHIFTER_RETRY_MAX", RETRY_MAX_DEFAULT)
         self.retry_max = int(self.retry_max)
-        self.connect_timeout = os.getenv('STIXSHIFTER_CONNECT_TIMEOUT', CONNECT_TIMEOUT_DEFAULT)
+        self.connect_timeout = os.getenv(
+            "STIXSHIFTER_CONNECT_TIMEOUT", CONNECT_TIMEOUT_DEFAULT
+        )
         self.connect_timeout = int(self.connect_timeout)
 
         self.logger = logger.set_logger(__name__)
         unique_file_handle = uuid.uuid4()
         self.server_cert_name = "/tmp/{0}-server_cert.pem".format(unique_file_handle)
         server_ip = host
-        
-        #To enable proxy, set the environment variable "STIX_SHIFTER_ENABLE_TRUST_ENV" to true. This option will allow the connection
-        #to use the system environments proxy settings. This can be done by setting the "https_proxy" environment variable to 
-        #"http(s)://[username]:[password]@[hostname]/[ipaddress]:[port]". Alternative proxy schema's may or may not work.
-        self.trust_env_enabled = os.environ.get("STIX_SHIFTER_ENABLE_TRUST_ENV", "False").lower()
+
+        # To enable proxy, set the environment variable "STIX_SHIFTER_ENABLE_TRUST_ENV" to true. This option will allow the connection
+        # to use the system environments proxy settings. This can be done by setting the "https_proxy" environment variable to
+        # "http(s)://[username]:[password]@[hostname]/[ipaddress]:[port]". Alternative proxy schema's may or may not work.
+        self.trust_env_enabled = os.environ.get(
+            "STIX_SHIFTER_ENABLE_TRUST_ENV", "False"
+        ).lower()
         if self.trust_env_enabled == "true":
             self.trust_env_enabled = True
         else:
             self.trust_env_enabled = False
-        self.logger.debug(f"Proxy Environment - Trusted_Env Enabled : {self.trust_env_enabled}")
+        self.logger.debug(
+            f"Proxy Environment - Trusted_Env Enabled : {self.trust_env_enabled}"
+        )
 
         if port is not None:
             server_ip += ":" + str(port)
         self.server_ip = server_ip
 
         # default ssl context is used based on https://docs.python.org/3.9/library/ssl.html#ssl.create_default_context
-        #SERVER_AUTH is for authenticating servers (IE: Client would use this to communicate with a server).
+        # SERVER_AUTH is for authenticating servers (IE: Client would use this to communicate with a server).
         self.ssl_context = ssl.create_default_context(purpose=ssl.Purpose.SERVER_AUTH)
-        ssl_cert_file = os.environ.get('SSL_CERT_FILE')
+        ssl_cert_file = os.environ.get("SSL_CERT_FILE")
         if ssl_cert_file:
             # library reference https://docs.python.org/3.9/library/ssl.html#ssl.SSLContext.load_verify_locations
             self.ssl_context.load_verify_locations(cafile=ssl_cert_file)
@@ -83,20 +97,29 @@ class RestApiClientAsync:
             self.ssl_context.load_default_certs()
 
         self.ssl_context.check_hostname = True
-    
+
         # If custom certificate is used for authentication then load it in the ssl context
         if cert_verify:
             try:
                 self.ssl_context.load_verify_locations(cadata=cert_verify)
             except Exception as ex:
-                raise Exception(f'Unable to load certificate for ssl context: ({ex})')
+                raise Exception(f"Unable to load certificate for ssl context: ({ex})")
 
         self.headers = headers
         self.url_modifier_function = url_modifier_function
         self.auth = auth
 
     # This method is used to set up an HTTP request and send it to the server
-    async def call_api(self, endpoint, method, headers=None, cookies=None, data=None, urldata=None, timeout=None):
+    async def call_api(
+        self,
+        endpoint,
+        method,
+        headers=None,
+        cookies=None,
+        data=None,
+        urldata=None,
+        timeout=None,
+    ):
         url = None
         actual_headers = self.headers.copy()
         if headers is not None:
@@ -104,43 +127,73 @@ class RestApiClientAsync:
                 actual_headers[header_key] = headers[header_key]
 
         if self.url_modifier_function is not None:
-            url = self.url_modifier_function(
-                self.server_ip, endpoint, actual_headers)
+            url = self.url_modifier_function(self.server_ip, endpoint, actual_headers)
         else:
-            url = 'https://' + self.server_ip + '/' + endpoint
+            url = "https://" + self.server_ip + "/" + endpoint
 
         try:
-            client_timeout = ClientTimeout(connect=self.connect_timeout, total=timeout) # https://docs.aiohttp.org/en/stable/client_reference.html?highlight=timeout#aiohttp.ClientTimeout
-            retry_options = ExponentialRetry(attempts=self.retry_max, statuses=[429, 500, 502, 503, 504])
-            async with RetryClient(trust_env=self.trust_env_enabled, retry_options=retry_options) as client:
-                call = getattr(client, method.lower()) 
+            client_timeout = ClientTimeout(
+                connect=self.connect_timeout, total=timeout
+            )  # https://docs.aiohttp.org/en/stable/client_reference.html?highlight=timeout#aiohttp.ClientTimeout
+            retry_options = ExponentialRetry(
+                attempts=self.retry_max,
+                statuses=[429, 500, 502, 503, 504],
+                start_timeout=10,
+                factor=3,
+            )
+            async with RetryClient(
+                trust_env=self.trust_env_enabled, retry_options=retry_options
+            ) as client:
+                call = getattr(client, method.lower())
 
-                async with call(url, headers=actual_headers, params=urldata, data=data,
-                                        ssl=self.ssl_context,
-                                        timeout=client_timeout,
-                                        cookies=cookies,
-                                        auth=self.auth) as response:
+                async with call(
+                    url,
+                    headers=actual_headers,
+                    params=urldata,
+                    data=data,
+                    ssl=self.ssl_context,
+                    timeout=client_timeout,
+                    cookies=cookies,
+                    auth=self.auth,
+                ) as response:
 
                     respWrapper = ResponseWrapper(response, client)
                     await respWrapper.wait()
 
                     if respWrapper.code == 429:
-                        raise Exception(f'Max retries exceeded. too_many_requests with max retry ({self.retry_max})')
+                        self.logger.error(
+                            f"Too many requests. Retrying after {self.retry_max} seconds, url: {url}"
+                        )
+                        raise Exception(
+                            f"Max retries exceeded. too_many_requests with max retry ({self.retry_max}) seconds for url: {url}"
+                        )
 
-                    if 'headers' in dir(response) and isinstance(response.headers, Mapping) and \
-                        'Content-Type' in response.headers and "Deprecated" in response.headers['Content-Type']:
+                    if (
+                        "headers" in dir(response)
+                        and isinstance(response.headers, Mapping)
+                        and "Content-Type" in response.headers
+                        and "Deprecated" in response.headers["Content-Type"]
+                    ):
 
-                        self.logger.error("WARNING: " + response.headers['Content-Type'], file=sys.stderr)
+                        self.logger.error(
+                            "WARNING: " + response.headers["Content-Type"],
+                            file=sys.stderr,
+                        )
 
                     return respWrapper
         except aiohttp.client_exceptions.ServerTimeoutError as e:
-            raise Exception(f'server timeout_error ({self.connect_timeout} sec): ({e})')
+            raise Exception(f"server timeout_error ({self.connect_timeout} sec): ({e})")
         except aiohttp.client_exceptions.ClientConnectorError as e:
-            raise Exception(f'client_connector_error: ({e})')
+            raise Exception(f"client_connector_error: ({e})")
         except TimeoutError as e:
-            raise Exception(f'timeout_error ({timeout} sec): ({e})')
+            raise Exception(f"timeout_error ({timeout} sec): ({e})")
         except Exception as e:
-            self.logger.error('exception occured during requesting url: ' + str(e) + " " + str(type(e)))
+            self.logger.error(
+                "exception occured during requesting url: "
+                + str(e)
+                + " "
+                + str(type(e))
+            )
             raise e
 
     # Simple getters that can be used to inspect the state of this client.
@@ -164,7 +217,7 @@ class ResponseWrapper:
         self._content = await self.response.content.read()
         self._headers = self.response.headers
         self._code = self.response.status
-    
+
     def read(self):
         return self._content
 
