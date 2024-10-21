@@ -14,7 +14,7 @@ class PingConnector(BasePingConnector):
         self.connector = __name__.split(".")[1]
 
     async def ping_connection(self):
-        self.logger.info("Pinging Data Source...")
+        self.logger.debug("Pinging Data Source...")
         response = await self.api_client.ping_box()
         response_code = response.code
 
@@ -28,8 +28,8 @@ class PingConnector(BasePingConnector):
             self.logger.debug(response_text)
             error = Exception(f"Can not parse response: {ex} : {response_text}")
 
-        self.logger.info("Ping response: {}".format(response_dict))
-        self.logger.info("Ping error: {}".format(error))
+        self.logger.debug("Ping response: {}".format(response_dict))
+        self.logger.debug("Ping error: {}".format(error))
 
         return_obj = dict()
         return_obj["success"] = False
@@ -44,5 +44,5 @@ class PingConnector(BasePingConnector):
                 error=error,
                 connector=self.connector,
             )
-        self.logger.info("Ping result: {}".format(return_obj))
+        self.logger.debug("Ping result: {}".format(return_obj))
         return return_obj

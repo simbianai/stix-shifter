@@ -39,7 +39,7 @@ class StatusConnector(BaseStatusConnector):
         return switcher.get(qradar_status).value
 
     async def create_status_connection(self, search_id):
-        self.logger.info("Getting search status...")
+        self.logger.debug("Getting search status...")
 
         max_retries = 10  # Maximum number of retries
         retry_delay = 20  # Seconds to wait before retrying
@@ -53,8 +53,8 @@ class StatusConnector(BaseStatusConnector):
 
                 error = None
                 response_dict = dict()
-                self.logger.info(f"Status response: {response_code}")
-                self.logger.info(f"Status response: {response_text}")
+                self.logger.debug(f"Status response: {response_code}")
+                self.logger.debug(f"Status response: {response_text}")
 
                 try:
                     response_dict = json.loads(response_text)
@@ -62,8 +62,8 @@ class StatusConnector(BaseStatusConnector):
                     self.logger.debug(response_text)
                     error = Exception(f"Cannot parse response: {ex} : {response_text}")
 
-                self.logger.info(f"Status response: {response_dict}")
-                self.logger.info(f"Status error: {error}")
+                self.logger.debug(f"Status response: {response_dict}")
+                self.logger.debug(f"Status error: {error}")
 
                 # Construct a response object
                 return_obj = dict()
@@ -93,7 +93,7 @@ class StatusConnector(BaseStatusConnector):
                     if attempt < max_retries:
                         await asyncio.sleep(retry_delay)  # Wait before retrying
                         raise Exception("Error in getting search status")
-                self.logger.info(f"Status result: {return_obj}")
+                self.logger.debug(f"Status result: {return_obj}")
                 return return_obj
 
             except Exception as e:

@@ -14,7 +14,7 @@ class ResultsConnector(BaseJsonResultsConnector):
         self.connector = __name__.split(".")[1]
 
     async def create_results_connection(self, search_id, offset, length):
-        self.logger.info("Getting search results...")
+        self.logger.debug("Getting search results...")
 
         max_retries = 10  # Maximum number of retries
         retry_delay = 20  # Seconds to wait before retrying
@@ -36,19 +36,19 @@ class ResultsConnector(BaseJsonResultsConnector):
                 response_text = response.read()
                 response_dict = dict()
 
-                self.logger.info(f"Results response: {response_code}")
-                self.logger.info(f"Results response: {response_text}")
+                self.logger.debug(f"Results response: {response_code}")
+                self.logger.debug(f"Results response: {response_text}")
 
                 try:
                     response_dict = json.loads(response_text)
                 except ValueError as ex:
                     self.logger.debug(response_text)
                 error = Exception(
-                        f"Cannot parse response from Qradar server. The response is not a valid JSON: {response_text} : {ex}"
-                    )
+                    f"Cannot parse response from Qradar server. The response is not a valid JSON: {response_text} : {ex}"
+                )
 
                 # self.logger.info(f"Results response: {response_dict}")
-                self.logger.info(f"Results error: {error}")
+                self.logger.debug(f"Results error: {error}")
 
                 if 200 <= response_code <= 299 and error is None:
                     return_obj["success"] = True
@@ -71,7 +71,7 @@ class ResultsConnector(BaseJsonResultsConnector):
                     else:
                         raise Exception("Error in retrieving search results")
 
-                self.logger.info(f"Results result: {return_obj}")
+                self.logger.debug(f"Results result: {return_obj}")
                 return return_obj
 
             except Exception as e:

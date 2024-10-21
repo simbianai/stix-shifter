@@ -14,7 +14,7 @@ class QueryConnector(BaseQueryConnector):
         self.connector = __name__.split(".")[1]
 
     async def create_query_connection(self, query):
-        self.logger.info("Creating query connection...")
+        self.logger.debug("Creating query connection...")
 
         max_retries = 10  # Maximum number of retries
         retry_delay = 20  # Seconds to wait before retrying
@@ -28,7 +28,7 @@ class QueryConnector(BaseQueryConnector):
 
                 error = None
                 response_dict = dict()
-                self.logger.info(f"Query response: {response_code}")
+                self.logger.debug(f"Query response: {response_code}")
 
                 try:
                     response_dict = json.loads(response_text)
@@ -36,8 +36,8 @@ class QueryConnector(BaseQueryConnector):
                     self.logger.debug(response_text)
                     error = Exception(f"Cannot parse response: {ex} : {response_text}")
 
-                self.logger.info(f"Query response: {response_dict}")
-                self.logger.info(f"Query error: {error}")
+                self.logger.debug(f"Query response: {response_dict}")
+                self.logger.debug(f"Query error: {error}")
 
                 # Construct a response object
                 return_obj = dict()
@@ -59,7 +59,7 @@ class QueryConnector(BaseQueryConnector):
                     if attempt < max_retries:
                         await asyncio.sleep(retry_delay)  # Wait before retrying
                         raise Exception("Error in getting search status")
-                self.logger.info(f"Query result: {return_obj}")
+                self.logger.debug(f"Query result: {return_obj}")
                 return return_obj
 
             except Exception as e:
