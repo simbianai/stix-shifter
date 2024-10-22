@@ -43,9 +43,9 @@ class ResultsConnector(BaseJsonResultsConnector):
                     response_dict = json.loads(response_text)
                 except ValueError as ex:
                     self.logger.debug(response_text)
-                error = Exception(
-                    f"Cannot parse response from Qradar server. The response is not a valid JSON: {response_text} : {ex}"
-                )
+                    error = Exception(
+                        f"Cannot parse response from Qradar server. The response is not a valid JSON: {response_text} : {ex}"
+                    )
 
                 # self.logger.info(f"Results response: {response_dict}")
                 self.logger.debug(f"Results error: {error}")
