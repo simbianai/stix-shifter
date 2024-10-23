@@ -53,12 +53,15 @@ class QueryConnector(BaseQueryConnector):
                         error=error,
                         connector=self.connector,
                     )
-                    self.logger.warning(
-                        f"Attempt {attempt}/{max_retries} failed with error: {error}"
-                    )
-                    if attempt < max_retries:
-                        await asyncio.sleep(retry_delay)  # Wait before retrying
-                        raise Exception("Error in getting search status")
+                    if 400 <= response_code <= 499:
+                        return return_obj
+                    else:
+                        self.logger.warning(
+                            f"Attempt {attempt}/{max_retries} failed with error: {error}"
+                        )
+                        if attempt < max_retries:
+                            await asyncio.sleep(retry_delay)  # Wait before retrying
+                            raise Exception("Error in getting search status")
                 self.logger.debug(f"Query result: {return_obj}")
                 return return_obj
 

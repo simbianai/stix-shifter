@@ -87,12 +87,16 @@ class StatusConnector(BaseStatusConnector):
                         error=error,
                         connector=self.connector,
                     )
-                    self.logger.warning(
-                        f"Attempt {attempt}/{max_retries} failed with error: {error}"
-                    )
-                    if attempt < max_retries:
-                        await asyncio.sleep(retry_delay)  # Wait before retrying
-                        raise Exception("Error in getting search status")
+                    if 400 <= response_code <= 499:
+                        return return_obj
+                    else:
+                        self.logger.warning(
+                            f"Attempt {attempt}/{max_retries} failed with error: {error}"
+                        )
+                        if attempt < max_retries:
+                            await asyncio.sleep(retry_delay)  # Wait before retrying
+                        else:
+                            raise Exception("Error in retrieving search results")
                 self.logger.debug(f"Status result: {return_obj}")
                 return return_obj
 
