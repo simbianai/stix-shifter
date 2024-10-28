@@ -53,7 +53,7 @@ class QueryConnector(BaseQueryConnector):
                         error=error,
                         connector=self.connector,
                     )
-                    if 400 <= response_code <= 499:
+                    if 400 <= response_code <= 500:
                         return return_obj
                     else:
                         self.logger.warning(

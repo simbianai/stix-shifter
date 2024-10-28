@@ -37,7 +37,6 @@ class ResultsConnector(BaseJsonResultsConnector):
                 response_dict = dict()
 
                 self.logger.debug(f"Results response: {response_code}")
-                self.logger.debug(f"Results response: {response_text}")
 
                 try:
                     response_dict = json.loads(response_text)
@@ -63,7 +62,7 @@ class ResultsConnector(BaseJsonResultsConnector):
                         error=error,
                         connector=self.connector,
                     )
-                    if 400 <= response_code <= 499:
+                    if 400 <= response_code <= 500:
                         return return_obj
                     else:
                         self.logger.warning(
@@ -74,7 +73,7 @@ class ResultsConnector(BaseJsonResultsConnector):
                         else:
                             raise Exception("Error in retrieving search results")
 
-                self.logger.debug(f"Results result: {return_obj}")
+                self.logger.debug(f"Results Obtained")
                 return return_obj
 
             except Exception as e:
