@@ -71,14 +71,8 @@ class StatusConnector(BaseStatusConnector):
                 if response_code == 200:
                     return_obj["success"] = True
                     return_obj["status"] = self.__getStatus(response_dict["status"])
-                    if return_obj["status"] == Status.RUNNING.value:
-                        await asyncio.sleep(10)
-                        if response_dict["progress"] == 100:
-                            return_obj["progress"] = 10
-                        else:
-                            return_obj["progress"] = response_dict.get("progress", 0)
-                    else:
-                        return_obj["progress"] = response_dict.get("progress", 0)
+
+                    return_obj["progress"] = response_dict.get("progress", 0)
                 else:
                     ErrorResponder.fill_error(
                         return_obj,
