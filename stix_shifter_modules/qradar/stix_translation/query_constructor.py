@@ -452,7 +452,7 @@ def _format_translated_queries(query_array):
 def translate_pattern(pattern: Pattern, data_model_mapping, options):
     result_limit = options["result_limit"]
     time_range = options["time_range"]
-    execution_time_ms = os.getenv("EXECUTION_TIME_LIMIT", "600000")
+    execution_time_ms = os.getenv("LOG_SEARCH_EXECUTION_TIME_LIMIT", "60000")
 
     translated_where_statements = AqlQueryStringPatternTranslator(
         pattern, data_model_mapping, result_limit, options
