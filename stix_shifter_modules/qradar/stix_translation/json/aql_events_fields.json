@@ -45,7 +45,6 @@
     "rulename(creeventlist) as rulenames",
     "domainid",
     "DOMAINNAME(domainid) as qradardomain",
-    "\"DNS Request Domain\" as dnsdomainname",
     "EventID",
     "\"Process Path\" as Image",
     "\"Parent Process Path\" as ParentImage",
