@@ -46,22 +46,9 @@
     "domainid",
     "DOMAINNAME(domainid) as qradardomain",
     "EventID",
-    "\"Process Path\" as Image",
-    "\"Parent Process Path\" as ParentImage",
-    "\"Process CommandLine\" as ProcessCommandLine",
-    "\"Parent Command\" as ParentCommandLine",
     "Message",
-    "\"Registry Value Name\" as RegistryValueName",
-    "\"IMP Hash\" as IMPHash",
-    "\"Service Filename\" as ServiceFileName",
-    "\"Registry Key\" as RegistryKey",
     "ObjectName",
     "\"URL Host\" as UrlHost",
-    "\"Process Name\" as ProcessName",
-    "\"Process ID\" as ProcessId",
-    "\"Parent Process ID\" as ParentProcessId",
-    "hasoffense",
-    "\"Machine Identifier\" as MachineId",
-    "\"Process Guid\" as ProcessGuid"
+    "hasoffense"
   ]
 }
