@@ -1,17 +1,61 @@
 {
-  "x-oca-event": {
-    "fields": {
-      "action": ["action"],
-      "description": ["description"],
-      "category": ["category"],
-      "severity": ["severity"],
-      "created": ["eventtime"],
-       "user_ref.account_login": ["username"]
+    "x-oca-event": {
+        "fields": {
+            "action": ["action"],
+            "description": ["description"],
+            "category": ["category"],
+            "severity": ["severity"],
+            "created": ["eventtime"],
+            "user_ref.account_login" : ["username"],
+            "timeline_by_month": ["timeline_by_month"],
+            "rg_timezoneoffset": ["rg_timezoneoffset"],
+            "resourcegroupname": ["resourcegroupname"],
+            "eventid": ["eventid"],
+             "ipaddress": ["ipaddress"],
+             "week": ["week"],
+            "year": ["year"],
+             "accountresourcekey": ["accountresourcekey"],
+            "resourcehostname": ["resourcehostname"],
+             "sourceprocessname": ["sourceprocessname"],
+            "rg_functionality": ["rg_functionality"],
+             "userid": ["userid"],
+              "customfield2": ["customfield2"],
+             "dayofmonth": ["dayofmonth"],
+              "jobid": ["jobid"],
+             "resourcegroupid": ["resourcegroupid"],
+            "datetime": ["datetime"],
+              "timeline_by_hour": ["timeline_by_hour"],
+             "collectiontimestamp": ["collectiontimestamp"],
+             "hour": ["hour"],
+            "accountname": ["accountname"],
+            "tenantid": ["tenantid"],
+            "id": ["id"],
+             "rg_resourcetypeid": ["rg_resourcetypeid"],
+             "_indexed_at_tdt": ["_indexed_at_tdt"],
+            "timeline_by_minute": ["timeline_by_minute"],
+          "routekey": ["routekey"],
+            "collectionmethod": ["collectionmethod"],
+            "receivedtime": ["receivedtime"],
+             "publishedtime": ["publishedtime"],
+              "categorizedtime": ["categorizedtime"],
+             "jobstarttime": ["jobstarttime"],
+              "dayofyear": ["dayofyear"],
+            "minute": ["minute"],
+            "categoryseverity": ["categoryseverity"],
+            "rg_vendor": ["rg_vendor"],
+             "month": ["month"],
+             "version": ["version"],
+             "timeline": ["timeline"],
+             "dayofweek": ["dayofweek"],
+             "timeline_by_week": ["timeline_by_week"],
+            "tenantname": ["tenantname"],
+            "resourcename": ["resourcename"],
+              "ingestionnodeid": ["ingestionnodeid"]
+        }
+    },
+    "ipv4-addr": {
+         "fields": {
+             "value": ["sourceip", "destinationip"]
+         }
     }
-  },
- "ipv4-addr": {
-    "fields": {
-      "value": ["sourceip", "destinationip"]
-    }
-  }
 }
