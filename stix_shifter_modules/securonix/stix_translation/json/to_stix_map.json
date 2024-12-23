@@ -1,0 +1,34 @@
+{
+  "action": {
+    "key": "x-oca-event.action",
+    "object": "x-oca-event"
+  },
+  "description": {
+    "key": "x-oca-event.description",
+    "object": "x-oca-event"
+  },
+  "category": {
+    "key": "x-oca-event.category",
+    "object": "x-oca-event"
+  },
+  "severity": {
+    "key": "x-oca-event.severity",
+    "object": "x-oca-event"
+  },
+  "eventtime": {
+    "key": "x-oca-event.created",
+    "object": "x-oca-event"
+  },
+  "username": {
+      "key": "x-oca-event.user_ref.account_login",
+      "object": "x-oca-event"
+  },
+  "sourceip": {
+      "key": "ipv4-addr.value",
+      "object": "ipv4-addr"
+  },
+  "destinationip": {
+      "key": "ipv4-addr.value",
+      "object": "ipv4-addr"
+  }
+}

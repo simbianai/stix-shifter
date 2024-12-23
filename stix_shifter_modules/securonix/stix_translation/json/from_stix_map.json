@@ -1,0 +1,17 @@
+{
+  "x-oca-event": {
+    "fields": {
+      "action": ["action"],
+      "description": ["description"],
+      "category": ["category"],
+      "severity": ["severity"],
+      "created": ["eventtime"],
+       "user_ref.account_login": ["username"]
+    }
+  },
+ "ipv4-addr": {
+    "fields": {
+      "value": ["sourceip", "destinationip"]
+    }
+  }
+}
