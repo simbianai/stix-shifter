@@ -15,7 +15,7 @@ class ErrorMapper:
     """
     Set Error Code
     """
-    logger = logger.set_logger(__name__)
+    logger = logger.set_logger(_name_)
     DEFAULT_ERROR = ErrorCode.TRANSMISSION_MODULE_DEFAULT_ERROR
 
     @staticmethod

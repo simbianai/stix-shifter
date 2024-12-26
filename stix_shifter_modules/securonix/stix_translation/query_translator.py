@@ -5,7 +5,7 @@ import json
 from . import query_constructor
 from stix_shifter_utils.utils.file_helper import read_json
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(_name_)
 
 
 class QueryTranslator(BaseQueryTranslator):

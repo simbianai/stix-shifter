@@ -1,61 +1,655 @@
 {
-    "x-oca-event": {
-        "fields": {
-            "action": ["action"],
-            "description": ["description"],
-            "category": ["category"],
-            "severity": ["severity"],
-            "created": ["eventtime"],
-            "user_ref.account_login" : ["username"],
-            "timeline_by_month": ["timeline_by_month"],
-            "rg_timezoneoffset": ["rg_timezoneoffset"],
-            "resourcegroupname": ["resourcegroupname"],
-            "eventid": ["eventid"],
-             "ipaddress": ["ipaddress"],
-             "week": ["week"],
-            "year": ["year"],
-             "accountresourcekey": ["accountresourcekey"],
-            "resourcehostname": ["resourcehostname"],
-             "sourceprocessname": ["sourceprocessname"],
-            "rg_functionality": ["rg_functionality"],
-             "userid": ["userid"],
-              "customfield2": ["customfield2"],
-             "dayofmonth": ["dayofmonth"],
-              "jobid": ["jobid"],
-             "resourcegroupid": ["resourcegroupid"],
-            "datetime": ["datetime"],
-              "timeline_by_hour": ["timeline_by_hour"],
-             "collectiontimestamp": ["collectiontimestamp"],
-             "hour": ["hour"],
-            "accountname": ["accountname"],
-            "tenantid": ["tenantid"],
-            "id": ["id"],
-             "rg_resourcetypeid": ["rg_resourcetypeid"],
-             "_indexed_at_tdt": ["_indexed_at_tdt"],
-            "timeline_by_minute": ["timeline_by_minute"],
-          "routekey": ["routekey"],
-            "collectionmethod": ["collectionmethod"],
-            "receivedtime": ["receivedtime"],
-             "publishedtime": ["publishedtime"],
-              "categorizedtime": ["categorizedtime"],
-             "jobstarttime": ["jobstarttime"],
-              "dayofyear": ["dayofyear"],
-            "minute": ["minute"],
-            "categoryseverity": ["categoryseverity"],
-            "rg_vendor": ["rg_vendor"],
-             "month": ["month"],
-             "version": ["version"],
-             "timeline": ["timeline"],
-             "dayofweek": ["dayofweek"],
-             "timeline_by_week": ["timeline_by_week"],
-            "tenantname": ["tenantname"],
-            "resourcename": ["resourcename"],
-              "ingestionnodeid": ["ingestionnodeid"]
-        }
-    },
-    "ipv4-addr": {
-         "fields": {
-             "value": ["sourceip", "destinationip"]
-         }
+  "file": {
+    "fields": {
+      "name": [
+        "filename",
+        "grandparent_details.filename",
+        "parent_details.filename",
+        "documents_accessed.filename",
+        "files_accessed.filename",
+        "executables_written.filename",
+        "files_written.filename",
+        "file_writes.name"
+      ],
+      "hashes.'MD5'": [
+        "md5",
+        "grandparent_details.md5",
+        "parent_details.md5"
+      ],
+      "hashes.'SHA-256'": [
+        "sha256",
+        "grandparent_details.sha256",
+        "parent_details.sha256",
+        "file_writes.sha256"
+      ],
+      "accessed": [
+        "timestamp",
+        "grandparent_details.timestamp",
+        "parent_details.timestamp",
+        "documents_accessed.timestamp",
+        "files_accessed.timestamp",
+        "executables_written.timestamp",
+        "files_written.timestamp"
+      ],
+      "parent_directory_ref.path": [
+        "filepath",
+        "grandparent_details.filepath",
+        "parent_details.filepath",
+        "documents_accessed.filepath",
+        "files_accessed.filepath",
+        "executables_written.filepath",
+        "files_written.filepath"
+      ],
+      "parent_directory_ref.accessed": [
+        "accessed",
+        "grandparent_details.accessed",
+        "parent_details.accessed",
+        "documents_accessed.timestamp",
+        "files_accessed.timestamp",
+        "executables_written.timestamp",
+        "files_written.timestamp"
+      ]
     }
+  },
+  "directory": {
+    "fields": {
+      "path": [
+        "filepath",
+        "grandparent_details.filepath",
+        "parent_details.filepath"
+      ],
+      "accessed": [
+        "accessed",
+        "grandparent_details.accessed",
+        "parent_details.accessed"
+      ]
+    }
+  },
+  "process": {
+    "fields": {
+      "command_line": [
+        "cmdline",
+        "grandparent_details.cmdline",
+        "parent_details.cmdline"
+      ],
+      "pid": [
+        "local_process_id",
+        "grandparent_details.local_process_id",
+        "parent_details.local_process_id"
+      ],
+      "name": [
+        "filename",
+        "grandparent_details.filename",
+        "parent_details.filename"
+      ],
+      "cwd": [
+        "filepath",
+        "grandparent_details.filepath",
+        "parent_details.filepath"
+      ],
+      "created": [
+        "timestamp",
+        "grandparent_details.timestamp",
+        "parent_details.timestamp"
+      ],
+      "creator_user_ref.user_id": [
+        "user_id",
+        "parent_details.user_id",
+        "grandparent_details.user_id"
+      ],
+      "creator_user_ref.account_login": [
+        "user_name",
+        "parent_details.user_name",
+        "grandparent_details.user_name"
+      ],
+      "binary_ref.name": [
+        "filename",
+        "grandparent_details.filename",
+        "parent_details.filename"
+      ],
+      "binary_ref.accessed": [
+        "timestamp",
+        "grandparent_details.timestamp",
+        "parent_details.timestamp"
+      ],
+      "binary_ref.hashes.'MD5'": [
+        "md5",
+        "grandparent_details.md5",
+        "parent_details.md5"
+      ],
+      "binary_ref.hashes.'SHA-256'": [
+        "sha256",
+        "grandparent_details.sha256",
+        "parent_details.sha256"
+      ],
+      "binary_ref.parent_directory_ref.path": [
+        "filepath",
+        "grandparent_details.filepath",
+        "parent_details.filepath"
+      ],
+      "binary_ref.parent_directory_ref.accessed": [
+        "accessed",
+        "grandparent_details.accessed",
+        "parent_details.accessed"
+      ],
+      "parent_process_ref.command_line": [
+        "grandparent_details.cmdline",
+        "parent_details.cmdline"
+      ],
+      "parent_process_ref.pid": [
+        "grandparent_details.local_process_id",
+        "parent_details.local_process_id"
+      ],
+      "parent_process_ref.name": [
+        "grandparent_details.filename",
+        "parent_details.filename"
+      ],
+      "parent_process_ref.cwd": [
+        "grandparent_details.filepath",
+        "parent_details.filepath"
+      ],
+      "parent_process_ref.created": [
+        "grandparent_details.timestamp",
+        "parent_details.timestamp"
+      ],
+      "parent_process_ref.creator_user_ref.user_id": [
+        "parent_details.user_id",
+        "grandparent_details.user_id"
+      ],
+      "parent_process_ref.creator_user_ref.account_login": [
+        "parent_details.user_name",
+        "grandparent_details.user_name"
+      ],
+      "parent_process_ref.binary_ref.name": [
+        "grandparent_details.filename",
+        "parent_details.filename"
+      ],
+      "parent_process_ref.binary_ref.accessed": [
+        "grandparent_details.timestamp",
+        "parent_details.timestamp"
+      ],
+      "parent_process_ref.binary_ref.hashes.'MD5'": [
+        "grandparent_details.md5",
+        "parent_details.md5"
+      ],
+      "parent_process_ref.binary_ref.hashes.'SHA-256'": [
+        "grandparent_details.sha256",
+        "parent_details.sha256"
+      ],
+      "parent_process_ref.binary_ref.parent_directory_ref.path": [
+        "grandparent_details.filepath",
+        "parent_details.filepath"
+      ],
+      "parent_process_ref.binary_ref.parent_directory_ref.accessed": [
+        "grandparent_details.accessed",
+        "parent_details.accessed"
+      ],
+      "parent_process_ref.child_refs.command_line": [
+        "cmdline"
+      ],
+      "parent_process_ref.child_refs.pid": [
+        "local_process_id"
+      ],
+      "parent_process_ref.child_refs.name": [
+        "filename"
+      ],
+      "parent_process_ref.child_refs.cwd": [
+        "filepath"
+      ],
+      "parent_process_ref.child_refs.created": [
+        "timestamp"
+      ],
+      "parent_process_ref.child_refs.creator_user_ref.user_id": [
+        "user_id"
+      ],
+      "parent_process_ref.child_refs.creator_user_ref.account_login": [
+        "user_name"
+      ],
+      "parent_process_ref.child_refs.binary_ref.name": [
+        "filename"
+      ],
+      "parent_process_ref.child_refs.binary_ref.accessed": [
+        "timestamp"
+      ],
+      "parent_process_ref.child_refs.binary_ref.hashes.'MD5'": [
+        "md5"
+      ],
+      "parent_process_ref.child_refs.binary_ref.hashes.'SHA-256'": [
+        "sha256"
+      ],
+      "parent_process_ref.child_refs.binary_ref.parent_directory_ref.path": [
+        "filepath"
+      ],
+      "parent_process_ref.child_refs.binary_ref.parent_directory_ref.accessed": [
+        "accessed"
+      ],
+      "parent_process_ref.parent_process_ref.command_line": [
+        "grandparent_details.cmdline"
+      ],
+      "parent_process_ref.parent_process_ref.pid": [
+        "grandparent_details.local_process_id"
+      ],
+      "parent_process_ref.parent_process_ref.name": [
+        "grandparent_details.filename"
+      ],
+      "parent_process_ref.parent_process_ref.cwd": [
+        "grandparent_details.filepath"
+      ],
+      "parent_process_ref.parent_process_ref.created": [
+        "grandparent_details.timestamp"
+      ],
+      "parent_process_ref.parent_process_ref.creator_user_ref.user_id": [
+        "parent_details.user_id"
+      ],
+      "parent_process_ref.parent_process_ref.creator_user_ref.account_login": [
+        "parent_details.user_name"
+      ],
+      "parent_process_ref.parent_process_ref.binary_ref.name": [
+        "grandparent_details.filename"
+      ],
+      "parent_process_ref.parent_process_ref.binary_ref.accessed": [
+        "grandparent_details.timestamp"
+      ],
+      "parent_process_ref.parent_process_ref.binary_ref.hashes.'MD5'": [
+        "grandparent_details.md5"
+      ],
+      "parent_process_ref.parent_process_ref.binary_ref.hashes.'SHA-256'": [
+        "grandparent_details.sha256"
+      ],
+      "parent_process_ref.parent_process_ref.binary_ref.parent_directory_ref.path": [
+        "grandparent_details.filepath"
+      ],
+      "parent_process_ref.parent_process_ref.binary_ref.parent_directory_ref.accessed": [
+        "grandparent_details.accessed"
+      ]
+    }
+  },
+  "user-account": {
+    "fields": {
+      "user_id": [
+        "user_id",
+        "parent_details.user_id",
+        "grandparent_details.user_id"
+      ],
+      "account_login": [
+        "user_name",
+        "parent_details.user_name",
+        "grandparent_details.user_name"
+      ]
+    }
+  },
+  "url": {
+    "fields": {
+      "value": [
+        "falcon_host_link",
+        "device.hostinfo.domain"
+      ]
+    }
+  },
+  "domain": {
+    "fields": {
+      "value": [
+        "logon_domain"
+      ]
+    }
+  },
+  "network-traffic": {
+    "fields": {
+      "start": [
+        "network_accesses.access_timestamp"
+      ],
+      "x_access_type": [
+        "network_accesses.access_type"
+      ],
+      "x_connection_direction": [
+        "network_accesses.connection_direction"
+      ],
+      "x_network_isIPV6": [
+        "network_accesses.isIPV6"
+      ],
+      "local_port": [
+        "network_accesses.src_port"
+      ],
+      "protocols": [
+        "network_accesses.protocol"
+      ],
+      "dst_port": [
+        "network_accesses.remote_port"
+      ]
+    }
+  },
+  "ipv4-addr": {
+    "fields": {
+      "value": [
+        "device.external_ip",
+        "device.local_ip",
+        "network_accesses.local_address",
+        "network_accesses.remote_address"
+      ]
+    }
+  },
+  "ipv6-addr": {
+    "fields": {
+      "value": [
+        "device.external_ip",
+        "device.local_ip",
+        "network_accesses.local_address",
+        "network_accesses.remote_address"
+      ]
+    }
+  },
+  "mac-addr": {
+    "fields": {
+      "value": [
+        "device.mac_address"
+      ]
+    }
+  },
+  "software": {
+    "fields": {
+      "version": [
+        "device.os_version"
+      ],
+      "name": [
+        "device.platform_name",
+        "platform",
+        "os_name"
+      ]
+    }
+  },
+  "x-oca-asset": {
+    "fields": {
+      "device_id": [
+        "device.device_id"
+      ],
+      "hostname": [
+        "device.hostname"
+      ],
+      "ip_refs.value": [
+        "device.external_ip",
+        "device.local_ip"
+      ],
+      "mac_refs.value": [
+        "device.mac_address"
+      ],
+      "os_ref.version": [
+        "device.os_version"
+      ],
+      "os_ref.name": [
+        "device.platform_name",
+        "platform"
+      ],
+      "x_agent_load_flags": [
+        "device.agent_load_flags"
+      ],
+      "x_agent_local_time": [
+        "device.agent_local_time"
+      ],
+      "x_agent_version": [
+        "device.agent_version"
+      ],
+      "x_bios_manufacturer": [
+        "device.bios_manufacturer"
+      ],
+      "x_bios_version": [
+        "device.bios_version"
+      ],
+      "x_device_cid": [
+        "device.cid"
+      ],
+      "x_config_id_base": [
+        "device.config_id_base"
+      ],
+      "x_config_id_build": [
+        "device.config_id_build"
+      ],
+      "x_config_id_platform": [
+        "device.config_id_platform"
+      ],
+      "x_first_seen": [
+        "device.first_seen"
+      ],
+      "x_instance_id": [
+        "device.instance_id"
+      ],
+      "x_last_seen": [
+        "device.last_seen"
+      ],
+      "x_major_version": [
+        "device.major_version"
+      ],
+      "x_minor_version": [
+        "device.minor_version"
+      ],
+      "x_modified_timestamp": [
+        "device.modified_timestamp"
+      ],
+      "x_device_ou": [
+        "device.ou"
+      ],
+      "x_platform_id": [
+        "device.platform_id"
+      ],
+      "x_pod_labels": [
+        "device.pod_labels"
+      ],
+      "x_product_type": [
+        "device.product_type"
+      ],
+      "x_product_type_desc": [
+        "device.product_type_desc"
+      ],
+      "x_service_provider": [
+        "device.service_provider"
+      ],
+      "x_service_provider_account_id": [
+        "device.service_provider_account_id"
+      ],
+      "x_device_status": [
+        "device.status"
+      ],
+      "x_system_manufacturer": [
+        "device.system_manufacturer"
+      ],
+      "x_system_product_name": [
+        "device.system_product_name"
+      ]
+    }
+  },
+  "x-oca-event": {
+    "fields": {
+      "action": [
+        "action"
+      ],
+      "description": [
+        "description"
+      ],
+      "category": [
+        "category"
+      ],
+      "severity": [
+        "severity"
+      ],
+      "x_severity_name": [
+        "severity_name"
+      ],
+      "created": [
+        "created_timestamp"
+      ],
+      "start": [
+        "process_start_time"
+      ],
+      "url_ref.value": [
+        "falcon_host_link"
+      ],
+      "file_ref.name": [
+        "filename",
+        "grandparent_details.filename",
+        "parent_details.filename"
+      ],
+      "file_ref.hashes.'MD5'": [
+        "md5",
+        "grandparent_details.md5",
+        "parent_details.md5"
+      ],
+      "file_ref.hashes.'SHA-256'": [
+        "sha256",
+        "grandparent_details.sha256",
+        "parent_details.sha256"
+      ],
+      "file_ref.accessed": [
+        "timestamp",
+        "grandparent_details.timestamp",
+        "parent_details.timestamp"
+      ],
+      "file_ref.parent_directory_ref.path": [
+        "filepath",
+        "grandparent_details.filepath",
+        "parent_details.filepath"
+      ],
+      "file_ref.parent_directory_ref.accessed": [
+        "accessed",
+        "grandparent_details.accessed",
+        "parent_details.accessed"
+      ],
+      "domain_ref.value": [
+        "logon_domain"
+      ],
+      "domain_ref.resolves_to_refs.value": [
+        "device.external_ip",
+        "device.local_ip"
+      ],
+      "ip_refs.value": [
+        "device.external_ip",
+        "device.local_ip"
+      ],
+      "user_ref.user_id": [
+        "user_id",
+        "parent_details.user_id",
+        "grandparent_details.user_id"
+      ],
+      "user_ref.account_login": [
+        "user_name",
+        "parent_details.user_name",
+        "grandparent_details.user_name"
+      ],
+      "process_ref.command_line": [
+        "cmdline",
+        "grandparent_details.cmdline",
+        "parent_details.cmdline"
+      ],
+      "process_ref.pid": [
+        "local_process_id",
+        "grandparent_details.local_process_id",
+        "parent_details.local_process_id"
+      ],
+      "process_ref.name": [
+        "filename",
+        "grandparent_details.filename",
+        "parent_details.filename"
+      ],
+      "process_ref.cwd": [
+        "filepath",
+        "grandparent_details.filepath",
+        "parent_details.filepath"
+      ],
+      "process_ref.created": [
+        "timestamp",
+        "grandparent_details.timestamp",
+        "parent_details.timestamp"
+      ],
+      "process_ref.creator_user_ref.user_id": [
+        "user_id",
+        "parent_details.user_id",
+        "grandparent_details.user_id"
+      ],
+      "process_ref.creator_user_ref.account_login": [
+        "user_name",
+        "parent_details.user_name",
+        "grandparent_details.user_name"
+      ],
+      "process_ref.binary_ref.name": [
+        "filename",
+        "grandparent_details.filename",
+        "parent_details.filename"
+      ],
+      "process_ref.binary_ref.accessed": [
+        "timestamp",
+        "grandparent_details.timestamp",
+        "parent_details.timestamp"
+      ],
+      "process_ref.binary_ref.hashes.'MD5'": [
+        "md5",
+        "grandparent_details.md5",
+        "parent_details.md5"
+      ],
+      "process_ref.binary_ref.hashes.'SHA-256'": [
+        "sha256",
+        "grandparent_details.sha256",
+        "parent_details.sha256"
+      ],
+      "process_ref.binary_ref.parent_directory_ref.path": [
+        "filepath",
+        "grandparent_details.filepath",
+        "parent_details.filepath"
+      ],
+      "process_ref.binary_ref.parent_directory_ref.accessed": [
+        "accessed",
+        "grandparent_details.accessed",
+        "parent_details.accessed"
+      ],
+      "parent_process_ref.command_line": [
+        "grandparent_details.cmdline",
+        "parent_details.cmdline"
+      ],
+      "parent_process_ref.pid": [
+        "grandparent_details.local_process_id",
+        "parent_details.local_process_id"
+      ],
+      "parent_process_ref.name": [
+        "grandparent_details.filename",
+        "parent_details.filename"
+      ],
+      "parent_process_ref.cwd": [
+        "grandparent_details.filepath",
+        "parent_details.filepath"
+      ],
+      "parent_process_ref.created": [
+        "grandparent_details.timestamp",
+        "parent_details.timestamp"
+      ],
+      "parent_process_ref.creator_user_ref.user_id": [
+        "parent_details.user_id",
+        "grandparent_details.user_id"
+      ],
+      "parent_process_ref.creator_user_ref.account_login": [
+        "parent_details.user_name",
+        "grandparent_details.user_name"
+      ],
+      "parent_process_ref.binary_ref.name": [
+        "grandparent_details.filename",
+        "parent_details.filename"
+      ],
+      "parent_process_ref.binary_ref.accessed": [
+        "grandparent_details.timestamp",
+        "parent_details.timestamp"
+      ],
+      "parent_process_ref.binary_ref.hashes.'MD5'": [
+        "grandparent_details.md5",
+        "parent_details.md5"
+      ],
+      "parent_process_ref.binary_ref.hashes.'SHA-256'": [
+        "grandparent_details.sha256",
+        "parent_details.sha256"
+      ],
+      "parent_process_ref.binary_ref.parent_directory_ref.path": [
+        "grandparent_details.filepath",
+        "parent_details.filepath"
+      ],
+      "parent_process_ref.binary_ref.parent_directory_ref.accessed": [
+        "grandparent_details.accessed",
+        "parent_details.accessed"
+      ]
+    }
+  }
 }
