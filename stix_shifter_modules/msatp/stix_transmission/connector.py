@@ -3,6 +3,7 @@ from stix_shifter_utils.modules.base.stix_transmission.base_json_sync_connector 
 from .api_client import APIClient
 from stix_shifter_utils.utils.error_response import ErrorResponder
 from stix_shifter_utils.utils import logger
+from azure.monitor.query import LogsQueryStatus
 
 from .connector_post_processing import ConnectorPostProcessing
 
@@ -23,22 +24,15 @@ class Connector(BaseJsonSyncConnector):
         :param response: response for the API
         :param return_obj: dict, response for the API call with status
         """
-        response_code = response.code
-        response_txt = response.read().decode('utf-8')
+        response_status = response.status
+        response_txt = [row._row_dict for row in response.tables[0].rows]
 
-        if 200 <= response_code < 300:
+        if response_status == LogsQueryStatus.SUCCESS:
             return_obj['success'] = True
             return_obj['data'] = response_txt
             return return_obj
-        elif ErrorResponder.is_plain_string(response_txt):
-            ErrorResponder.fill_error(return_obj, message=response_txt, connector=self.connector)
-            raise Exception(return_obj)
-        elif ErrorResponder.is_json_string(response_txt):
-            response_json = json.loads(response_txt)
-            ErrorResponder.fill_error(return_obj, response_json, ['reason'], connector=self.connector)
-            raise Exception(return_obj)
         else:
-            raise Exception(return_obj)
+            raise Exception(response)
 
     async def ping_connection(self):
         """Ping the endpoint."""
@@ -88,5 +82,5 @@ class Connector(BaseJsonSyncConnector):
         temp_return_obj = dict()
         response = await self.api_client.run_search(joined_query, offset, length)
         temp_return_obj = self._handle_errors(response, temp_return_obj)
-        response_data = json.loads(temp_return_obj["data"]).get("Results")
+        response_data = temp_return_obj["data"]
         return response_data
