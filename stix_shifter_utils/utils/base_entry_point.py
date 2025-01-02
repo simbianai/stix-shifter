@@ -77,9 +77,9 @@ class BaseEntryPoint:
         if not(self.__results_connector and self.__status_connector and self.__delete_connector and self.__query_connector):
             raise Exception('EntryPoint: one of transmission connectors is not configured')
 
-    def add_dialect(self, dialect, query_translator=None, results_translator=None, default=False, default_include=True):
+    def add_dialect(self, dialect, query_translator=None, results_translator=None, default=False, default_include=True, custom_mapping=None):
         if not query_translator:
-            query_translator = self.create_default_query_translator(dialect)
+            query_translator = self.create_default_query_translator(dialect, custom_mapping)
         if not results_translator:
             results_translator = self.create_default_results_translator(dialect)
         if not (isinstance(query_translator, BaseQueryTranslator)):
@@ -106,13 +106,13 @@ class BaseEntryPoint:
             self.add_dialect(dialect, query_translator=query_translator, results_translator=results_translator,
                              default=is_default)
 
-    def create_default_query_translator(self, dialect):
+    def create_default_query_translator(self, dialect, custom_mapping=None):
         module_name = self.__connector_module
         module = importlib.import_module(
                     "stix_shifter_modules." + module_name + ".stix_translation.query_translator")
         basepath = os.path.dirname(module.__file__)
         mapping_filepath = os.path.abspath(basepath)
-        query_translator = module.QueryTranslator(self.__options, dialect, mapping_filepath)
+        query_translator = module.QueryTranslator(self.__options, dialect, mapping_filepath, custom_mapping)
         return query_translator
 
     def create_default_results_translator(self, dialect):
@@ -152,6 +152,8 @@ class BaseEntryPoint:
     @translation
     def get_query_translator(self, dialect=None):
         try:
+            print("stixShifter dialect :", dialect)
+            print("dialect_to_query_translator :", self.__dialect_to_query_translator)
             if dialect:
                 return self.__dialect_to_query_translator[dialect]
             return self.__dialect_to_query_translator[self.__dialect_default[self.__options.get(OPTION_LANGUAGE, "stix")]]

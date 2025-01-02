@@ -11,8 +11,8 @@ DEFAULT_FIELDS = "src_ip, src_port, src_mac, src_ipv6, dest_ip, dest_port, dest_
 
 class QueryTranslator(BaseQueryTranslator):
 
-    def __init__(self, options, dialect, basepath):
-        super().__init__(options, dialect, basepath)
+    def __init__(self, options, dialect, basepath, custom_mapping):
+        super().__init__(options, dialect, basepath, custom_mapping)
         self.select_fields = read_json(f"select_fields", options)
 
     def transform_antlr(self, data, antlr_parsing_object):

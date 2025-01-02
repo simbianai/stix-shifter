@@ -33,7 +33,7 @@ class StixTranslation:
         self.args = []
         self.logger = logger.set_logger(__name__)
 
-    async def translate_async(self, module, translate_type, data_source, data, options={}, recursion_limit=1000):
+    async def translate_async(self, module, translate_type, data_source, data, options={}, recursion_limit=1000, custom_mapping=None):
         module, dialects = process_dialects(module, options)
         error = None
         code = None
@@ -47,7 +47,7 @@ class StixTranslation:
                     validated_options = param_validator(module, options, 'connection.options')
                 else:
                     validated_options = {}
-                entry_point = connector_module.EntryPoint(options=validated_options)
+                entry_point = connector_module.EntryPoint(options=validated_options, custom_mapping=custom_mapping)
             except Exception as ex:
                 track = traceback.format_exc()
                 self.logger.error(ex)
@@ -148,7 +148,7 @@ class StixTranslation:
             return response
 
     
-    def translate(self, module, translate_type, data_source, data, options={}, recursion_limit=1000):
+    def translate(self, module, translate_type, data_source, data, options={}, recursion_limit=1000, custom_mapping=None):
         """
         Translated queries to a specified format
         :param module: What module to use
@@ -164,6 +164,6 @@ class StixTranslation:
         :return: translated results
         :rtype: str
         """
-        return run_in_thread(self.translate_async, module, translate_type, data_source, data, options, recursion_limit)
+        return run_in_thread(self.translate_async, module, translate_type, data_source, data, options, recursion_limit, custom_mapping)
 
        

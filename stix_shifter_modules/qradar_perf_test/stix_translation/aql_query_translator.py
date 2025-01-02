@@ -54,7 +54,7 @@ class AqlQueryTranslator(BaseQueryTranslator):
     def get_language(self):
         return 'aql'
 
-    def fetch_mapping(self, basepath, dialect, options):
+    def fetch_mapping(self, basepath, dialect, options, custom_mapping):
         pass
 
     def __search_for_pattern(self, data, time_pattens, label):
