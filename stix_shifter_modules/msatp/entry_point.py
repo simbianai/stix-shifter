@@ -3,7 +3,7 @@ from stix_shifter_utils.utils.base_entry_point import BaseEntryPoint
 
 class EntryPoint(BaseEntryPoint):
 
-    def __init__(self, connection={}, configuration={}, options={}):
+    def __init__(self, connection={}, configuration={}, options={}, custom_mapping=None):
         super().__init__(connection, configuration, options)
         self.set_async(False)
 
@@ -11,3 +11,6 @@ class EntryPoint(BaseEntryPoint):
             self.setup_transmission_basic(connection, configuration)
 
         self.setup_translation_simple(dialect_default='default')
+
+        if custom_mapping:
+            self.add_dialect(dialect='custom', custom_mapping=custom_mapping)

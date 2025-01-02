@@ -9,8 +9,8 @@ logger = logging.getLogger(__name__)
 
 class QueryTranslator(BaseQueryTranslator):
 
-    def __init__(self, options, dialect, basepath):
-        super().__init__(options, dialect, basepath)
+    def __init__(self, options, dialect, basepath, custom_mapping):
+        super().__init__(options, dialect, basepath, custom_mapping)
         self.transformers = get_module_transformers('guardium')
 
     def transform_antlr(self, data, antlr_parsing_object):

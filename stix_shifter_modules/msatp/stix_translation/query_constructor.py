@@ -131,7 +131,7 @@ class QueryStringPatternTranslator:
         """
         try:
             compile_timestamp_regex = re.compile(START_STOP_PATTERN)
-            mapped_field = "Timestamp"
+            mapped_field = "TimeGenerated"
             if qualifier and compile_timestamp_regex.search(qualifier):
                 time_range_iterator = compile_timestamp_regex.finditer(qualifier)
                 time_range_list = [each.group() for each in time_range_iterator]
@@ -344,7 +344,7 @@ class QueryStringPatternTranslator:
 
     def construct_query_from_map(self, map_kusto_query):
         for table in map_kusto_query:
-            curr_query = '(find withsource = TableName in ({}) {} | order by Timestamp desc | where {})' \
+            curr_query = '(find withsource = TableName in ({}) {} | order by TimeGenerated desc | where {})' \
                 .format(table, self.qualifier_string, map_kusto_query[table])
             self.qualified_queries.append(curr_query)
 
