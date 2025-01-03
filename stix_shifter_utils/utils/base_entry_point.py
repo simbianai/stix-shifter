@@ -81,7 +81,7 @@ class BaseEntryPoint:
         if not query_translator:
             query_translator = self.create_default_query_translator(dialect, custom_mapping)
         if not results_translator:
-            results_translator = self.create_default_results_translator(dialect)
+            results_translator = self.create_default_results_translator(dialect, custom_mapping)
         if not (isinstance(query_translator, BaseQueryTranslator)):
             raise Exception('query_translator is not instance of BaseQueryTranslator')
         if not (isinstance(results_translator, BaseResultTranslator)):
@@ -115,7 +115,7 @@ class BaseEntryPoint:
         query_translator = module.QueryTranslator(self.__options, dialect, mapping_filepath, custom_mapping)
         return query_translator
 
-    def create_default_results_translator(self, dialect):
+    def create_default_results_translator(self, dialect, custom_mapping=None):
         module_name = self.__connector_module
         dir_path = "stix_shifter_modules." + module_name + ".stix_translation"
         file_path = dir_path + ".results_translator"
@@ -123,12 +123,12 @@ class BaseEntryPoint:
             module = importlib.import_module(file_path)
             basepath = os.path.dirname(module.__file__)
             mapping_filepath = os.path.abspath(basepath)
-            results_translator = module.ResultsTranslator(self.__options, dialect, mapping_filepath)
+            results_translator = module.ResultsTranslator(self.__options, dialect, mapping_filepath, custom_mapping)
         except:
             module = importlib.import_module(dir_path)
             basepath = os.path.dirname(module.__file__)
             mapping_filepath = os.path.abspath(basepath)
-            results_translator = JSONToStix(self.__options, dialect, mapping_filepath)
+            results_translator = JSONToStix(self.__options, dialect, mapping_filepath, custom_mapping)
         return results_translator
 
     @translation
