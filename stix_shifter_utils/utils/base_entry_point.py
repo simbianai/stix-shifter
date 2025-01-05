@@ -123,12 +123,12 @@ class BaseEntryPoint:
             module = importlib.import_module(file_path)
             basepath = os.path.dirname(module.__file__)
             mapping_filepath = os.path.abspath(basepath)
-            results_translator = module.ResultsTranslator(self.__options, dialect, mapping_filepath, custom_mapping)
+            results_translator = module.ResultsTranslator(self.__options, dialect, mapping_filepath, custom_mapping=custom_mapping)
         except:
             module = importlib.import_module(dir_path)
             basepath = os.path.dirname(module.__file__)
             mapping_filepath = os.path.abspath(basepath)
-            results_translator = JSONToStix(self.__options, dialect, mapping_filepath, custom_mapping)
+            results_translator = JSONToStix(self.__options, dialect, mapping_filepath, custom_mapping=custom_mapping)
         return results_translator
 
     @translation
@@ -152,8 +152,6 @@ class BaseEntryPoint:
     @translation
     def get_query_translator(self, dialect=None):
         try:
-            print("stixShifter dialect :", dialect)
-            print("dialect_to_query_translator :", self.__dialect_to_query_translator)
             if dialect:
                 return self.__dialect_to_query_translator[dialect]
             return self.__dialect_to_query_translator[self.__dialect_default[self.__options.get(OPTION_LANGUAGE, "stix")]]
@@ -169,17 +167,17 @@ class BaseEntryPoint:
         """
         default_results_translator:BaseResultTranslator = self.__dialect_to_results_translator[self.__dialect_default[self.__options.get(OPTION_LANGUAGE, "stix")]]
         results_translator = copy.deepcopy(default_results_translator)
-
+        print("results_translator map_data default: ", results_translator.map_data)
         for dialect, translator in self.__dialect_to_results_translator.items():
             if dialects and dialect not in dialects:
                 continue
-            results_translator.map_data = {**results_translator.map_data, **translator.map_data}
-
+            results_translator.map_data = deep_merge_dicts(results_translator.map_data, translator.map_data)
+        print("results_translator map_data: ", results_translator.map_data)
         return results_translator
-
 
     @translation
     def get_results_translator(self, dialect:Union[str,list]=None):
+        print("dialect: ", dialect)
         if dialect and isinstance(dialect, str):
             return self.__dialect_to_results_translator[dialect]
         return self.__combine_default_results_translator_to_stix_maps(dialect)
@@ -364,3 +362,13 @@ class BaseEntryPoint:
 
     def is_async(self):
         return self.__async
+    
+def deep_merge_dicts(base: dict, new: dict):
+        for key, value in new.items():
+            if (key in base 
+                and isinstance(base[key], dict) 
+                and isinstance(value, dict)):
+                deep_merge_dicts(base[key], value)
+            else:
+                base[key] = value
+        return base

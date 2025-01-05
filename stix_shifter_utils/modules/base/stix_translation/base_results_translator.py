@@ -13,7 +13,7 @@ class BaseResultTranslator(object, metaclass=ABCMeta):
         self.callback = callback
         self.module_name = base_file_path.split(os.sep)[-2]
         self.logger = logger.set_logger(__name__)
-        self.map_data = self.fetch_mapping(base_file_path, dialect, options, custom_mapping)
+        self.map_data = self.fetch_mapping(base_file_path, dialect, options, custom_mapping=custom_mapping)
         self.transformers = get_module_transformers(self.module_name)
 
     def read_json(self, filepath, options):
@@ -60,3 +60,6 @@ class BaseResultTranslator(object, metaclass=ABCMeta):
         """
         # if translating some datasource to STIX results...
         raise NotImplementedError()
+    
+    def get_map_data(self):
+        return self.map_data
