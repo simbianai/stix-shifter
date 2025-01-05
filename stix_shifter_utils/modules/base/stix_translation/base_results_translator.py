@@ -60,6 +60,3 @@ class BaseResultTranslator(object, metaclass=ABCMeta):
         """
         # if translating some datasource to STIX results...
         raise NotImplementedError()
-    
-    def get_map_data(self):
-        return self.map_data
