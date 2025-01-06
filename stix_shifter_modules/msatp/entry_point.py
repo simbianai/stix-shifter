@@ -12,7 +12,7 @@ class EntryPoint(BaseEntryPoint):
 
         self.setup_translation_simple(dialect_default='default')
 
-        if custom_mapping:
+        if custom_mapping and custom_mapping['to_stix_mapping']:
             table_names = custom_mapping['to_stix_mapping'].keys()
             print("table_names: ", table_names)
             for table_name in table_names:
