@@ -5,10 +5,14 @@ import json
 from . import query_constructor
 from stix_shifter_utils.utils.file_helper import read_json
 
-logger = logging.getLogger(_name_)
+logger = logging.getLogger(__name__)
 
 
 class QueryTranslator(BaseQueryTranslator):
+
+    def __init__(self, connection, configuration):
+      self.connection = connection
+      self.configuration = configuration
 
     def transform_antlr(self, data, antlr_parsing_object):
         """

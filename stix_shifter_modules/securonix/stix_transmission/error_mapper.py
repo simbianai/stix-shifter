@@ -7,7 +7,7 @@ error_mapping = {
     "AuthenticationError": ErrorCode.TRANSMISSION_AUTH_CREDENTIALS,
     "ValidationError": ErrorCode.TRANSMISSION_QUERY_LOGICAL_ERROR,
     "AttributeError": ErrorCode.TRANSMISSION_INVALID_PARAMETER,
-    "TokenError": ErrorCode.TRANSMISSION_AUTH_CREDENTIALS
+     "TokenError": ErrorCode.TRANSMISSION_AUTH_CREDENTIALS
 }
 
 
@@ -15,7 +15,7 @@ class ErrorMapper:
     """
     Set Error Code
     """
-    logger = logger.set_logger(_name_)
+    logger = logger.set_logger(__name__)
     DEFAULT_ERROR = ErrorCode.TRANSMISSION_MODULE_DEFAULT_ERROR
 
     @staticmethod

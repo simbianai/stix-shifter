@@ -8,7 +8,7 @@ import time
 
 
 class APIResponseException(Exception):
-    def _init_(self, error_code, error_message, content_header_type, response):
+    def __init__(self, error_code, error_message, content_header_type, response):
         self.error_code = error_code
         self.error_message = error_message
         self.content_header_type = content_header_type
@@ -19,12 +19,12 @@ class APIResponseException(Exception):
 
 class APIClient:
     TOKEN_ENDPOINT = '/Snypr/ws/token/generate'
-    SEARCH_ENDPOINT = '/Snypr/ws/spotter/index/search'
-    logger = logger.set_logger(_name_)
+    SEARCH_ENDPOINT = '/Snypr/ws/spotter/search'
+    logger = logger.set_logger(__name__)
 
     """API Client to handle all calls."""
 
-    def _init_(self):
+    def __init__(self):
         """Initialization.
         :param connection: dict, connection dict
         :param configuration: dict,config dict"""
@@ -33,7 +33,7 @@ class APIClient:
 
         self.headers = dict()
         self.headers['Content-Type'] = 'application/json'
-        self.headers['Accept'] = '/'
+        self.headers['Accept'] = '*/*'
         self.headers['user-agent'] = 'oca_stixshifter_1.0'
 
         self.auth_headers = dict()
@@ -42,15 +42,15 @@ class APIClient:
 
         self._token_time = datetime.now() - timedelta(days=7)
 
-    async def ping_box(self, client, base_url, auth_headers, headers, timeout):
-        token = await self.get_token(client, base_url, auth_headers, timeout)
+    def ping_box(self, client, base_url, auth_headers, headers, timeout):
+        token = self._get_token(client, base_url, auth_headers, timeout)
         headers['token'] = token
         params = {
             "query": "index=activity"
         }
         try:
             response = requests.get(f"{base_url}{self.SEARCH_ENDPOINT}", headers=headers, params=params,
-                                    timeout=timeout, verify=False)
+                                    timeout=self.timeout, verify=False)
 
             response_obj = type('response_obj', (), {})()
             response_obj.code = response.status_code
@@ -61,15 +61,18 @@ class APIClient:
             self.logger.error(f"Error during ping box: {e}")
             raise e
 
-    async def get_securonix_data(self, query, client, base_url, auth_headers, headers, timeout, queryId=None,
-                                 count_only=False):
-        token = await self.get_token(client, base_url, auth_headers, timeout)
+    def get_securonix_data(self, query, client, base_url, auth_headers, headers, timeout, queryId=None,
+                           count_only=False):
+        token = self._get_token(client, base_url, auth_headers, timeout)
         headers['token'] = token
+        headers['Accept'] = '*/*'
+        headers['Content-Type'] = 'application/json'
+        headers['user-agent'] = 'oca_stixshifter_1.0'
         now = datetime.now()
         past_24_hours = now - timedelta(hours=24)
 
         params = {
-            "query": query,
+            "query": f"index=activity AND {query}",
             "eventtime_from": past_24_hours.strftime("%m/%d/%Y %H:%M:%S"),
             "eventtime_to": now.strftime("%m/%d/%Y %H:%M:%S")
         }
@@ -94,14 +97,18 @@ class APIClient:
             self.logger.error(f"Error getting securonix data: {e}")
             raise e
 
-    async def get_token(self, client, base_url, auth_headers, timeout) -> str:
+    def _get_token(self) -> str:
         self.logger.debug(f"Checking if the current token has expired. Token Creation time was {self._token_time}")
         if (datetime.now() - self._token_time) >= timedelta(minutes=30):
             self.logger.debug(f"Attempting to get a new authenctication token")
 
+            self.auth_headers['username'] = self.username
+            self.auth_headers['password'] = self.password
+            self.auth_headers['validity'] = '365'
+
             try:
-                response = requests.get(f"{base_url}{self.TOKEN_ENDPOINT}", headers=auth_headers, timeout=timeout,
-                                        verify=False)
+                response = requests.get(self.base_url + self.TOKEN_ENDPOINT, headers=self.auth_headers,
+                                        timeout=self.timeout, verify=False)
                 # A successful response can be 200 or 201.
                 if response.status_code >= 200 and response.status_code < 300:
 

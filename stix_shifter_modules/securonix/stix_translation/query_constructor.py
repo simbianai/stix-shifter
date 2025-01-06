@@ -3,7 +3,6 @@ from stix_shifter_utils.stix_translation.src.patterns.pattern_objects import Obs
     ComparisonExpressionOperators, ComparisonComparators, Pattern, \
     CombinedComparisonExpression, CombinedObservationExpression, ObservationOperators, StartStopQualifier, SetValue
 from datetime import datetime, timedelta
-import time
 
 
 class SecuronixQueryStringPatternTranslator:
@@ -12,8 +11,8 @@ class SecuronixQueryStringPatternTranslator:
     Stix to Securonix query translation
     """
 
-    def _init_(self, pattern: Pattern, data_model_mapper, time_range):
-        # self.logger = logger.set_logger(_name_)
+    def __init__(self, pattern: Pattern, data_model_mapper, time_range):
+        # self.logger = logger.set_logger(__name__)
         self.dmm = data_model_mapper
         self.comparator_lookup = self.dmm.map_comparator()
         self.pattern = pattern
@@ -163,8 +162,8 @@ class SecuronixQueryStringPatternTranslator:
 
 
 def translate_pattern(pattern: Pattern, data_model_mapping, options):
-    time_range = options['time_range']
+    time_range = options.get('time_range')
 
     translated_statements_lst = SecuronixQueryStringPatternTranslator(pattern, data_model_mapping, time_range)
     translated_statements = " ".join(translated_statements_lst.queries)
-    return f"index=activity AND {translated_statements}"
+    return translated_statements
