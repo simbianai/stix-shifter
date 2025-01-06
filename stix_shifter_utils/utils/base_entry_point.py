@@ -81,7 +81,7 @@ class BaseEntryPoint:
         if not query_translator:
             query_translator = self.create_default_query_translator(dialect, custom_mapping)
         if not results_translator:
-            results_translator = self.create_default_results_translator(dialect)
+            results_translator = self.create_default_results_translator(dialect, custom_mapping)
         if not (isinstance(query_translator, BaseQueryTranslator)):
             raise Exception('query_translator is not instance of BaseQueryTranslator')
         if not (isinstance(results_translator, BaseResultTranslator)):
@@ -115,7 +115,7 @@ class BaseEntryPoint:
         query_translator = module.QueryTranslator(self.__options, dialect, mapping_filepath, custom_mapping)
         return query_translator
 
-    def create_default_results_translator(self, dialect):
+    def create_default_results_translator(self, dialect, custom_mapping=None):
         module_name = self.__connector_module
         dir_path = "stix_shifter_modules." + module_name + ".stix_translation"
         file_path = dir_path + ".results_translator"
@@ -123,12 +123,12 @@ class BaseEntryPoint:
             module = importlib.import_module(file_path)
             basepath = os.path.dirname(module.__file__)
             mapping_filepath = os.path.abspath(basepath)
-            results_translator = module.ResultsTranslator(self.__options, dialect, mapping_filepath)
+            results_translator = module.ResultsTranslator(self.__options, dialect, mapping_filepath, custom_mapping=custom_mapping)
         except:
             module = importlib.import_module(dir_path)
             basepath = os.path.dirname(module.__file__)
             mapping_filepath = os.path.abspath(basepath)
-            results_translator = JSONToStix(self.__options, dialect, mapping_filepath)
+            results_translator = JSONToStix(self.__options, dialect, mapping_filepath, custom_mapping=custom_mapping)
         return results_translator
 
     @translation
@@ -152,8 +152,6 @@ class BaseEntryPoint:
     @translation
     def get_query_translator(self, dialect=None):
         try:
-            print("stixShifter dialect :", dialect)
-            print("dialect_to_query_translator :", self.__dialect_to_query_translator)
             if dialect:
                 return self.__dialect_to_query_translator[dialect]
             return self.__dialect_to_query_translator[self.__dialect_default[self.__options.get(OPTION_LANGUAGE, "stix")]]
@@ -169,14 +167,11 @@ class BaseEntryPoint:
         """
         default_results_translator:BaseResultTranslator = self.__dialect_to_results_translator[self.__dialect_default[self.__options.get(OPTION_LANGUAGE, "stix")]]
         results_translator = copy.deepcopy(default_results_translator)
-
         for dialect, translator in self.__dialect_to_results_translator.items():
             if dialects and dialect not in dialects:
                 continue
             results_translator.map_data = {**results_translator.map_data, **translator.map_data}
-
         return results_translator
-
 
     @translation
     def get_results_translator(self, dialect:Union[str,list]=None):
