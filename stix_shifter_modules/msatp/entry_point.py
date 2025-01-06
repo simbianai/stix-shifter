@@ -13,4 +13,7 @@ class EntryPoint(BaseEntryPoint):
         self.setup_translation_simple(dialect_default='default')
 
         if custom_mapping:
-            self.add_dialect(dialect='custom', custom_mapping=custom_mapping)
+            table_names = custom_mapping['to_stix_mapping'].keys()
+            print("table_names: ", table_names)
+            for table_name in table_names:
+                self.add_dialect(dialect=table_name, custom_mapping=custom_mapping)
