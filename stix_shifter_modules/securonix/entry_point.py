@@ -6,7 +6,7 @@ class EntryPoint(BaseEntryPoint):
 
     def __init__(self, connection={}, configuration={}, options={}):
         super().__init__(connection, configuration, options)
-        self.set_async(False)
+        self.set_async(True)
 
         if connection:
             self.setup_transmission_basic(connection, configuration)
@@ -17,14 +17,11 @@ class EntryPoint(BaseEntryPoint):
         # This returns the raw query, bypassing the STIX parsing
         return [query]
 
-    def create_results_connection(self, query, offset, length, metadata=None):
-        # Wrap the async call in asyncio.run
-        return asyncio.run(super().create_results_connection(query, offset, length, metadata=metadata))
 
-    def ping_connection(self):
+    async def create_results_connection(self, query, offset, length, metadata=None):
         # Wrap the async call in asyncio.run
-        return asyncio.run(self.transmission.ping_connection())
+        return await (super().create_results_connection(query, offset, length, metadata))
 
-    def get_query_translator(self, dialect):
-        # Ensure we pass parameters to query translator
-        return self.stix_translation.QueryTranslator(self.connection, self.configuration)
+    async def ping_connection(self):
+        # Wrap the async call in asyncio.run
+        return await self.transmission.ping_connection()

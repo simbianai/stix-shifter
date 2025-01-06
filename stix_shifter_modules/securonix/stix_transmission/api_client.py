@@ -19,7 +19,7 @@ class APIResponseException(Exception):
 
 class APIClient:
     TOKEN_ENDPOINT = '/Snypr/ws/token/generate'
-    SEARCH_ENDPOINT = '/Snypr/ws/spotter/search'
+    SEARCH_ENDPOINT = '/Snypr/ws/spotter/index/search'
     logger = logger.set_logger(__name__)
 
     """API Client to handle all calls."""
@@ -42,75 +42,80 @@ class APIClient:
 
         self._token_time = datetime.now() - timedelta(days=7)
 
-    def ping_box(self, client, base_url, auth_headers, headers, timeout):
-        token = self._get_token(client, base_url, auth_headers, timeout)
+    async def ping_box(self, client, base_url, auth_headers, headers, timeout):
+        token = await self.get_token(client, base_url, auth_headers, timeout)
         headers['token'] = token
         params = {
-            "query": "index=activity"
+            "query": "index=violation"
         }
         try:
-            response = requests.get(f"{base_url}{self.SEARCH_ENDPOINT}", headers=headers, params=params,
-                                    timeout=self.timeout, verify=False)
+            response = requests.get(f"{base_url}{self.SEARCH_ENDPOINT}",
+                                    headers=headers,
+                                    params=params,
+                                    timeout=timeout,
+                                    verify=False)
 
-            response_obj = type('response_obj', (), {})()
-            response_obj.code = response.status_code
-            response_obj.content = response.content
-            response_obj.headers = response.headers
+            response_data = response.json()
+            # Create response object with mapped results
+            response_obj = type('response_obj', (), {
+                'code': response.status_code,
+                'content': json.dumps({'results': response_data.get('events', [])}),
+                'headers': response.headers
+            })()
+
             return response_obj
         except Exception as e:
             self.logger.error(f"Error during ping box: {e}")
             raise e
 
-    def get_securonix_data(self, query, client, base_url, auth_headers, headers, timeout, queryId=None,
-                           count_only=False):
-        token = self._get_token(client, base_url, auth_headers, timeout)
+    async def get_securonix_data(self, query, client, base_url, auth_headers, headers, timeout, queryId=None):
+        token = await self.get_token(client, base_url, auth_headers, timeout)
         headers['token'] = token
         headers['Accept'] = '*/*'
         headers['Content-Type'] = 'application/json'
-        headers['user-agent'] = 'oca_stixshifter_1.0'
+
         now = datetime.now()
         past_24_hours = now - timedelta(hours=24)
 
         params = {
-            "query": f"index=activity AND {query}",
-            "eventtime_from": past_24_hours.strftime("%m/%d/%Y %H:%M:%S"),
-            "eventtime_to": now.strftime("%m/%d/%Y %H:%M:%S")
+            "query": query,
+            "index": "activity",
+            "eventtime_from": past_24_hours.strftime('%m/%d/%Y %H:%M:%S'),
+            "eventtime_to": now.strftime('%m/%d/%Y %H:%M:%S')
         }
 
-        if (queryId != None):
+        if queryId:
             params["queryId"] = queryId
 
-        if (count_only == True):
-            params["count_only"] = "true"
-
-        self.logger.debug(f"Final Request URL : {base_url}{self.SEARCH_ENDPOINT}?{urlencode(params)}")
         try:
-            response = requests.get(f"{base_url}{self.SEARCH_ENDPOINT}", headers=headers, params=params,
-                                    timeout=timeout, verify=False)
+            response = requests.get(
+                f"{base_url}{self.SEARCH_ENDPOINT}",
+                headers=headers,
+                params=params,
+                timeout=timeout,
+                verify=False
+            )
 
             response_obj = type('response_obj', (), {})()
             response_obj.code = response.status_code
             response_obj.content = response.content
             response_obj.headers = response.headers
             return response_obj
+
         except Exception as e:
             self.logger.error(f"Error getting securonix data: {e}")
             raise e
 
-    def _get_token(self) -> str:
+    async def get_token(self, client, base_url, auth_headers, timeout) -> str:
         self.logger.debug(f"Checking if the current token has expired. Token Creation time was {self._token_time}")
         if (datetime.now() - self._token_time) >= timedelta(minutes=30):
             self.logger.debug(f"Attempting to get a new authenctication token")
 
-            self.auth_headers['username'] = self.username
-            self.auth_headers['password'] = self.password
-            self.auth_headers['validity'] = '365'
-
             try:
-                response = requests.get(self.base_url + self.TOKEN_ENDPOINT, headers=self.auth_headers,
-                                        timeout=self.timeout, verify=False)
+                response = requests.get(f"{base_url}{self.TOKEN_ENDPOINT}", headers=auth_headers, timeout=timeout,
+                                        verify=False)
                 # A successful response can be 200 or 201.
-                if response.status_code >= 200 and response.status_code < 300:
+                if 200 <= response.status_code < 300:
 
                     self.logger.debug(f"Get authentication token was successful.")
                     token_text = response.text

@@ -7,7 +7,7 @@ error_mapping = {
     "AuthenticationError": ErrorCode.TRANSMISSION_AUTH_CREDENTIALS,
     "ValidationError": ErrorCode.TRANSMISSION_QUERY_LOGICAL_ERROR,
     "AttributeError": ErrorCode.TRANSMISSION_INVALID_PARAMETER,
-     "TokenError": ErrorCode.TRANSMISSION_AUTH_CREDENTIALS
+    "TokenError": ErrorCode.TRANSMISSION_AUTH_CREDENTIALS
 }
 
 

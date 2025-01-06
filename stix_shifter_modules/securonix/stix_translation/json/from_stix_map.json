@@ -1,21 +1,35 @@
 {
-    "file": {
+    "ipv4-addr": {
         "fields": {
-            "name": [
-                "filename",
-                "grandparent_details.filename",
-                "parent_details.filename",
-                "documents_accessed.filename",
-                "files_accessed.filename",
-                "executables_written.filename",
-                "files_written.filename",
-                "file_writes.name"
-             ]
-         }
-      },
-     "ipv4-addr": {
+            "value": ["sourceaddress", "destinationaddress"]
+        }
+    },
+    "network-traffic": {
         "fields": {
-            "value": ["sourceip", "destinationip"]
-         }
-     }
+            "src_port": ["sourceport"],
+            "dst_port": ["destinationport"],
+            "protocols[*]": ["transportprotocol"],
+            "src_ref.value": ["sourceaddress"],
+            "dst_ref.value": ["destinationaddress"]
+        }
+    },
+    "x-oca-asset": {
+        "fields": {
+            "name": ["resourcegroupname", "devicehostname"],
+            "ip_refs[*].value": ["sourceaddress", "destinationaddress"]
+        }
+    },
+    "user-account": {
+        "fields": {
+            "user_id": ["username", "accountname"],
+            "display_name": ["username"]
+        }
+    },
+    "process": {
+        "fields": {
+            "name": ["processname"],
+            "pid": ["processid"],
+            "command_line": ["commandline"]
+        }
+    }
 }

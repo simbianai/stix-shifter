@@ -162,8 +162,8 @@ class SecuronixQueryStringPatternTranslator:
 
 
 def translate_pattern(pattern: Pattern, data_model_mapping, options):
-    time_range = options.get('time_range')
+    time_range = options['time_range']
 
     translated_statements_lst = SecuronixQueryStringPatternTranslator(pattern, data_model_mapping, time_range)
     translated_statements = " ".join(translated_statements_lst.queries)
-    return translated_statements
+    return f"{translated_statements}"
