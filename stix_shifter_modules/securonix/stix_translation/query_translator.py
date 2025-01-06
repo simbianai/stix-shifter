@@ -1,9 +1,11 @@
 from stix_shifter_utils.modules.base.stix_translation.base_query_translator import BaseQueryTranslator
 import logging
+import re
 from os import path
 import json
 from . import query_constructor
 from stix_shifter_utils.utils.file_helper import read_json
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +23,15 @@ class QueryTranslator(BaseQueryTranslator):
             return match.group(1)
         return None
 
+    @staticmethod
+    def _get_resourcegroup_name(query_string):
+        """Extract resourcegroup name from the query string"""
+        resourcegroup_pattern = r"resourcegroupname = '([^']+)'"
+        match = re.search(resourcegroup_pattern, query_string)
+        if match:
+            return match.group(1)
+        return None
+
     def transform_antlr(self, data, antlr_parsing_object):
         logger.info("Converting STIX2 Pattern to Securonix Query")
 
@@ -28,13 +39,20 @@ class QueryTranslator(BaseQueryTranslator):
         query_string = query_constructor.translate_pattern(
             antlr_parsing_object, self, self.options)
 
-        # Transform to Securonix Spotter format
-        if "ipv4-addr:value" in str(antlr_parsing_object):
-            # Handle IP address queries
-            ip_value = self._get_ip_value(query_string)  # Extract IP from query
-            formatted_query = f"index=activity AND sourceaddress='{ip_value}' AND resourcegroupname=TCC_MERAKI_FIREWALL"
-        else:
-            # Handle other query types
-            formatted_query = f"index=activity AND {query_string}"
+        # Extract start and end times from the pattern
+        timestamp_pattern = r"START t'([^']+)' STOP t'([^']+)'"
+        match = re.search(timestamp_pattern, data)
 
-        return formatted_query
+        if match:
+            start_time = datetime.strptime(match.group(1), '%Y-%m-%dT%H:%M:%S.%fZ')
+            end_time = datetime.strptime(match.group(2), '%Y-%m-%dT%H:%M:%S.%fZ')
+
+            # Format timestamps for Securonix API
+            formatted_start = start_time.strftime('%m/%d/%Y %H:%M:%S')
+            formatted_end = end_time.strftime('%m/%d/%Y %H:%M:%S')
+
+            # Add timestamps to the query
+            query_string = f"{query_string}&eventtime_from={formatted_start}&eventtime_to={formatted_end}"
+
+        return query_string
+

@@ -1,35 +1,77 @@
 {
-    "ipv4-addr": {
-        "fields": {
-            "value": ["sourceaddress", "destinationaddress"]
-        }
-    },
-    "network-traffic": {
-        "fields": {
-            "src_port": ["sourceport"],
-            "dst_port": ["destinationport"],
-            "protocols[*]": ["transportprotocol"],
-            "src_ref.value": ["sourceaddress"],
-            "dst_ref.value": ["destinationaddress"]
-        }
-    },
-    "x-oca-asset": {
-        "fields": {
-            "name": ["resourcegroupname", "devicehostname"],
-            "ip_refs[*].value": ["sourceaddress", "destinationaddress"]
-        }
-    },
-    "user-account": {
-        "fields": {
-            "user_id": ["username", "accountname"],
-            "display_name": ["username"]
-        }
-    },
-    "process": {
-        "fields": {
-            "name": ["processname"],
-            "pid": ["processid"],
-            "command_line": ["commandline"]
-        }
+  "ipv4-addr": {
+    "fields": {
+      "value": [
+        "sourceaddress",
+        "destinationaddress"
+      ]
     }
+  },
+  "network-traffic": {
+    "fields": {
+      "src_port": [
+        "sourceport"
+      ],
+      "dst_port": [
+        "destinationport"
+      ],
+      "protocols[*]": [
+        "transportprotocol"
+      ],
+      "src_ref.value": [
+        "sourceaddress"
+      ],
+      "dst_ref.value": [
+        "destinationaddress"
+      ]
+    }
+  },
+  "x-oca-asset": {
+    "fields": {
+      "name": [
+        "resourcegroupname",
+        "devicehostname"
+      ],
+      "ip_refs[*].value": [
+        "sourceaddress",
+        "destinationaddress"
+      ]
+    }
+  },
+  "user-account": {
+    "fields": {
+      "user_id": [
+        "username",
+        "accountname"
+      ],
+      "display_name": [
+        "username"
+      ]
+    }
+  },
+  "process": {
+    "fields": {
+      "name": [
+        "processname"
+      ],
+      "pid": [
+        "processid"
+      ],
+      "command_line": [
+        "commandline"
+      ]
+    }
+  },
+  "created": {
+    "fields": {
+      "value": [
+        "eventtime_from",
+        "eventtime_to"
+      ]
+    }
+  }
 }
+
+
+
+
