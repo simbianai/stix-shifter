@@ -111,6 +111,8 @@ async def clean_query(apiclient, raw_query: str) -> str:
         # Example: columns_info = [{'name': 'Filename'}, {'name': 'File Hash'}, ...]
         # Create a set of valid columns in lowercase
         valid_columns = {col["name"].lower() for col in columns_info}
+        if not valid_columns:
+            return raw_query
 
         # --- STEP 2: Naively split SELECT ... FROM ... [WHERE ...] ---
 
