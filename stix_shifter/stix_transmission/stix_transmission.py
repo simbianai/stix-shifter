@@ -38,7 +38,8 @@ class StixTransmission:
             module = 'proxy'
         try:
             connector_module = importlib.import_module("stix_shifter_modules." + module + ".entry_point")
-            self.entry_point = connector_module.EntryPoint(connection, configuration, connection.get('options', {}), custom_mapping)
+            self.entry_point = connector_module.EntryPoint(connection, configuration, connection.get('options', {}))
+            self.entry_point.handle_custom_mapping(custom_mapping)
         except Exception as e:
             self.init_error = e
     

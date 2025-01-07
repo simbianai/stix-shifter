@@ -47,7 +47,8 @@ class StixTranslation:
                     validated_options = param_validator(module, options, 'connection.options')
                 else:
                     validated_options = {}
-                entry_point = connector_module.EntryPoint(options=validated_options, custom_mapping=custom_mapping)
+                entry_point = connector_module.EntryPoint(options=validated_options)
+                entry_point.handle_custom_mapping(custom_mapping)
             except Exception as ex:
                 track = traceback.format_exc()
                 self.logger.error(ex)
