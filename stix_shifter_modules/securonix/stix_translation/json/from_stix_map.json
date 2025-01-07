@@ -2,8 +2,8 @@
   "ipv4-addr": {
     "fields": {
       "value": [
-        "sourceaddress",
-        "destinationaddress"
+        "sourceip",
+        "destinationip"
       ]
     }
   },
@@ -19,22 +19,64 @@
         "transportprotocol"
       ],
       "src_ref.value": [
-        "sourceaddress"
+        "sourceip"
       ],
       "dst_ref.value": [
-        "destinationaddress"
+        "destinationip"
+      ]
+    }
+  },
+  "mac-addr": {
+    "fields": {
+      "value": [
+        "sourcemacaddress",
+        "destinationmacaddress"
       ]
     }
   },
   "x-oca-asset": {
     "fields": {
-      "name": [
-        "resourcegroupname",
+      "hostname": [
+        "hostname",
         "devicehostname"
       ],
-      "ip_refs[*].value": [
-        "sourceaddress",
-        "destinationaddress"
+      "name": [
+        "resourcename",
+        "resourcegroupname"
+      ],
+      "type": [
+        "resourcetype"
+      ]
+    }
+  },
+  "x-securonix": {
+    "fields": {
+      "resourcename": [
+        "resourcename"
+      ],
+      "resourcetype": [
+        "resourcetype"
+      ],
+      "resourcegroupid": [
+        "resourcegroupid"
+      ],
+      "categoryseverity": [
+        "categoryseverity"
+      ],
+      "categoryid": [
+        "categoryid"
+      ],
+      "rg_vendor": [
+        "rg_vendor"
+      ],
+      "rg_functionality": [
+        "rg_functionality"
+      ],
+      "tenantname": [
+        "tenantname"
+      ],
+      "tenantid": [
+        "tenantid"
       ]
     }
   },
@@ -52,7 +94,8 @@
   "process": {
     "fields": {
       "name": [
-        "processname"
+        "processname",
+        "sourceprocessname"
       ],
       "pid": [
         "processid"
@@ -62,16 +105,54 @@
       ]
     }
   },
-  "created": {
+  "x-oca-event": {
     "fields": {
-      "value": [
-        "eventtime_from",
-        "eventtime_to"
+      "action": [
+        "action"
+      ],
+      "category": [
+        "category"
+      ],
+      "description": [
+        "description"
+      ],
+      "severity": [
+        "severity",
+        "categoryseverity"
+      ],
+      "category_id": [
+        "categoryid"
+      ],
+      "resource_group_id": [
+        "resourcegroupid"
+      ],
+      "tenant_id": [
+        "tenantid"
+      ],
+      "tenant_name": [
+        "tenantname"
+      ],
+      "rg_vendor": [
+        "rg_vendor"
+      ],
+      "rg_functionality": [
+        "rg_functionality"
+      ],
+      "timeline": [
+        "timeline"
+      ],
+      "timeline_by_month": [
+        "timeline_by_month"
+      ],
+      "timeline_by_week": [
+        "timeline_by_week"
+      ],
+      "timeline_by_hour": [
+        "timeline_by_hour"
+      ],
+      "timeline_by_minute": [
+        "timeline_by_minute"
       ]
     }
   }
 }
-
-
-
-

@@ -12,47 +12,60 @@ logger = logging.getLogger(__name__)
 
 class QueryTranslator(BaseQueryTranslator):
 
-    @staticmethod
-    def _get_ip_value(query_string):
-        """Extract IP value from the query string"""
-        # Extract IP address from patterns like device.external_ip = '192.168.1.100'
-        import re
-        ip_pattern = r"'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'"
-        match = re.search(ip_pattern, query_string)
-        if match:
-            return match.group(1)
-        return None
+    def __init__(self, options, dialect, basepath):
+        super().__init__(options, dialect, basepath)
+        self.supported_fields = {
+            'hostname': r"hostname = '([^']+)'",
+            'sourcemacaddress': r"sourcemacaddress = '([^']+)'",
+            'resourcename': r"resourcename = '([^']+)'",
+            'resourcetype': r"resourcetype = '([^']+)'",
+            'destinationmacaddress': r"destinationmacaddress = '([^']+)'",
+            'destinationport': r"destinationport = '(\d+)'",
+            'categoryseverity': r"categoryseverity = '([^']+)'",
+            'categoryid': r"categoryid = '([^']+)'",
+            'resourcegroupid': r"resourcegroupid = '([^']+)'",
+            'sourceport': r"sourceport = '(\d+)'",
+            'devicehostname': r"devicehostname = '([^']+)'",
+            'rg_vendor': r"rg_vendor = '([^']+)'",
+            'rg_functionality': r"rg_functionality = '([^']+)'",
+            'tenantname': r"tenantname = '([^']+)'",
+            'tenantid': r"tenantid = '([^']+)'"
+        }
 
-    @staticmethod
-    def _get_resourcegroup_name(query_string):
-        """Extract resourcegroup name from the query string"""
-        resourcegroup_pattern = r"resourcegroupname = '([^']+)'"
-        match = re.search(resourcegroup_pattern, query_string)
-        if match:
-            return match.group(1)
+    def _extract_field_values(self, query_string, field_pattern):
+        match = re.search(field_pattern, query_string)
+        return match.group(1) if match else None
+
+    def _get_field_value(self, query_string, field):
+        if field in self.supported_fields:
+            return self._extract_field_values(query_string, self.supported_fields[field])
         return None
 
     def transform_antlr(self, data, antlr_parsing_object):
         logger.info("Converting STIX2 Pattern to Securonix Query")
 
-        # Get the base query from the pattern
         query_string = query_constructor.translate_pattern(
             antlr_parsing_object, self, self.options)
 
-        # Extract start and end times from the pattern
+        # Extract values for all supported fields
+        field_values = {}
+        for field in self.supported_fields:
+            value = self._get_field_value(query_string, field)
+            if value:
+                field_values[field] = value
+
+        # Add extracted values to query string
+        for field, value in field_values.items():
+            query_string = f"{query_string}&{field}={value}"
+
+        # Handle timestamps
         timestamp_pattern = r"START t'([^']+)' STOP t'([^']+)'"
         match = re.search(timestamp_pattern, data)
-
         if match:
             start_time = datetime.strptime(match.group(1), '%Y-%m-%dT%H:%M:%S.%fZ')
             end_time = datetime.strptime(match.group(2), '%Y-%m-%dT%H:%M:%S.%fZ')
-
-            # Format timestamps for Securonix API
             formatted_start = start_time.strftime('%m/%d/%Y %H:%M:%S')
             formatted_end = end_time.strftime('%m/%d/%Y %H:%M:%S')
-
-            # Add timestamps to the query
             query_string = f"{query_string}&eventtime_from={formatted_start}&eventtime_to={formatted_end}"
 
         return query_string
-

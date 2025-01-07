@@ -12,11 +12,10 @@ class SecuronixQueryStringPatternTranslator:
     """
 
     def __init__(self, pattern: Pattern, data_model_mapper, time_range):
-        # self.logger = logger.set_logger(__name__)
         self.dmm = data_model_mapper
         self.comparator_lookup = self.dmm.map_comparator()
         self.pattern = pattern
-        self.time_range = time_range  # filter results to last x minutes
+        self.time_range = time_range
         self.translated = self.parse_expression(pattern)
         self.queries = []
         self.queries.extend(self.translated)
@@ -40,30 +39,49 @@ class SecuronixQueryStringPatternTranslator:
     def _format_start_stop_qualifier(self, expression, qualifier: StartStopQualifier) -> str:
         start = self._to_securonix_timestamp(qualifier.start)
         stop = self._to_securonix_timestamp(qualifier.stop)
-
         start_stop_query = "(eventtime >= {} AND eventtime <= {})".format(start, stop)
-
         return "({}) AND {}".format(expression, start_stop_query)
 
-    def _parse_mapped_fields(self, value, comparator, mapped_fields_array) -> str:
-        """Convert a list of mapped fields into a query string."""
+    @staticmethod
+    def _parse_mapped_fields(value, comparator, mapped_fields_array) -> str:
         comp_str = ""
         comparison_strings = []
+
+        # Extended field mappings
+        extended_fields = {
+            'hostname': 'hostname',
+            'sourcemacaddress': 'sourcemacaddress',
+            'resourcename': 'resourcename',
+            'resourcetype': 'resourcetype',
+            'destinationmacaddress': 'destinationmacaddress',
+            'destinationport': 'destinationport',
+            'categoryseverity': 'categoryseverity',
+            'categoryid': 'categoryid',
+            'resourcegroupid': 'resourcegroupid',
+            'sourceport': 'sourceport',
+            'devicehostname': 'devicehostname',
+            'rg_vendor': 'rg_vendor',
+            'rg_functionality': 'rg_functionality',
+            'tenantname': 'tenantname',
+            'tenantid': 'tenantid'
+        }
 
         if isinstance(value, str):
             value = [value]
         if isinstance(value, int):
             value = [value]
+
         for val in value:
             for mapped_field in mapped_fields_array:
-                comparison_strings.append(f"{mapped_field} {comparator} '{val}'")
+                field_name = extended_fields.get(mapped_field, mapped_field)
+                comparison_strings.append(f"{field_name} {comparator} '{val}'")
 
         if len(comparison_strings) == 1:
             comp_str = comparison_strings[0]
         elif len(comparison_strings) > 1:
             comp_str = f"({' OR '.join(comparison_strings)})"
         else:
-            raise RuntimeError((f'Failed to convert {mapped_fields_array} mapped fields into query string'))
+            raise RuntimeError(f'Failed to convert {mapped_fields_array} mapped fields into query string')
 
         return comp_str
 
