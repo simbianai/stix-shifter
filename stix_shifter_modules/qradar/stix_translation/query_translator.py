@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 class QueryTranslator(BaseQueryTranslator):
 
-    def __init__(self, options, dialect, basepath, custom_mapping):
+    def __init__(self, options, dialect, basepath, custom_mapping= None):
         super().__init__(options, dialect, basepath, custom_mapping)
         self.select_fields = read_json(f"aql_{self.dialect}_fields", options)
 
