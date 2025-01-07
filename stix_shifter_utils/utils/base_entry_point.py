@@ -361,6 +361,8 @@ class BaseEntryPoint:
         return self.__async
     
     def handle_custom_mapping(self, custom_mapping):
+        # TODO: eventually this dialect should come as a different argument with the table name
+        # as extracting it from to_stix_mapping is not a good idea
         if custom_mapping and custom_mapping['to_stix_mapping']:
             for table_name in custom_mapping['to_stix_mapping'].keys():
                 self.add_dialect(dialect=table_name, custom_mapping=custom_mapping)
