@@ -48,7 +48,7 @@ The Securonix connector supports translation between STIX patterns and Securonix
 
 ## Query Examples
 
-### Translating STIX Pattern to Securonix Query
+### Translating STIX Pattern to Securonix Query.
 
 ```bash
 python3 main.py translate securonix query '{}' "[ipv4-addr:value = '192.168.107.252' AND x-oca-asset:name = 'TCC_MERAKI_FIREWALL'] START t'2025-01-06T06:58:54.000Z' STOP t'2025-01-06T07:48:40.000Z'"
@@ -63,7 +63,7 @@ python3 main.py translate securonix query '{}' "[ipv4-addr:value = '192.168.107.
 }
 ```
 
-### Converting Securonix Events (Activity Logs) to STIX Objects
+### Converting Securonix Events (Activity Logs) to STIX Objects.
 ```bash
 python3 main.py translate securonix results '{"type": "identity", "id":"identity--f431f809-377b-45e0-aa1c-6a4751cae5ff", "name": "Securonix", "identity_class": "events"}' '[{"eventtime": "2024-01-06T06:58:54.000Z", "sourceaddress": "192.168.107.252", "resourcegroupname": "TCC_MERAKI_FIREWALL", "categoryseverity": "high"}]'
 ```
