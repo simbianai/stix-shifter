@@ -465,15 +465,30 @@ def translate_pattern(pattern: Pattern, data_model_mapping, options):
     def build_query_with_parameters(
         select_stmt, dialect, where_stmt, limit=None, time_range=None
     ):
+        domain_id = int(os.getenv("QRADAR_DOMAIN_ID", "2"))
+        # Build the WHERE clause
+        where_conditions = []
+
+        # Add domain constraint if provided
+        if domain_id is not None:
+            where_conditions.append(f"domainid = {domain_id}")
+
+        # Add original where statement if it's not empty or '1=0'
+        if where_stmt and where_stmt != "1=0":
+            where_conditions.append(f"{where_stmt}")
+
+        # Combine all conditions with AND
+        final_where = " AND ".join(where_conditions) if where_conditions else "1=1"
+
         if limit and time_range:
             return (
                 f"SELECT {select_stmt} FROM {dialect} "
-                f"WHERE {where_stmt} limit {limit} last {time_range} minutes\n"
+                f"WHERE {final_where} limit {limit} last {time_range} minutes\n"
                 f"PARAMETERS EXECUTIONTIMELIMIT={execution_time_ms}"
             )
         else:
             return (
-                f"SELECT {select_stmt} FROM {dialect} WHERE {where_stmt}\n"
+                f"SELECT {select_stmt} FROM {dialect} WHERE {final_where}\n"
                 f"PARAMETERS EXECUTIONTIMELIMIT={execution_time_ms}"
             )
 
