@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 
 class QueryTranslator(BaseQueryTranslator):
 
-    def __init__(self, options, dialect, basepath):
-        super().__init__(options, dialect, basepath)
+    def __init__(self, options, dialect, basepath, custom_mapping=None):
+        super().__init__(options, dialect, basepath, custom_mapping=custom_mapping)
         self.supported_fields = {
             'hostname': r"hostname = '([^']+)'",
             'sourcemacaddress': r"sourcemacaddress = '([^']+)'",
