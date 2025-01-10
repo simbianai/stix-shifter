@@ -31,6 +31,8 @@ class QueryTranslator(BaseQueryTranslator):
             'tenantname': r"tenantname = '([^']+)'",
             'tenantid': r"tenantid = '([^']+)'"
         }
+        if custom_mapping:
+            self.supported_fields.update(custom_mapping)
 
     def _extract_field_values(self, query_string, field_pattern):
         match = re.search(field_pattern, query_string)

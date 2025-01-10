@@ -3,6 +3,8 @@ from stix_shifter_utils.stix_translation.src.patterns.pattern_objects import Obs
     ComparisonExpressionOperators, ComparisonComparators, Pattern, \
     CombinedComparisonExpression, CombinedObservationExpression, ObservationOperators, StartStopQualifier, SetValue
 from datetime import datetime, timedelta
+import os
+import json
 
 
 class SecuronixQueryStringPatternTranslator:
@@ -13,19 +15,31 @@ class SecuronixQueryStringPatternTranslator:
 
     def __init__(self, pattern: Pattern, data_model_mapper, time_range):
         self.dmm = data_model_mapper
-        self.comparator_lookup = self.dmm.map_comparator()
+        self.comparator_lookup = self._load_comparator_mapping()
         self.pattern = pattern
         self.time_range = time_range
         self.translated = self.parse_expression(pattern)
         self.queries = []
         self.queries.extend(self.translated)
 
+    def _load_comparator_mapping(self):
+        basepath = os.path.dirname(__file__)
+        file_path = os.path.join(basepath, 'json', 'operators.json')
+        with open(file_path, 'r') as f:
+            return json.load(f)
+
+
     @staticmethod
     def _escape_value(value, comparator=None) -> str:
         if isinstance(value, str):
-            return '{}'.format(
-                value.replace('\\', '\\\\').replace('\"', '\\"').replace('(', '\\(').replace(')', '\\)').replace(
-                    ' ', '\\ '))
+             if comparator == "LIKE":
+                return '{}'.format(
+                    value.replace('\\', '\\\\').replace('\"', '\\"').replace('(', '\\(').replace(')', '\\)').replace(
+                        ' ', '\\ ').replace('%', '*').replace('_', '?'))
+             else:
+                return '{}'.format(
+                    value.replace('\\', '\\\\').replace('\"', '\\"').replace('(', '\\(').replace(')', '\\)').replace(
+                        ' ', '\\ '))
         else:
             return value
 
@@ -103,6 +117,8 @@ class SecuronixQueryStringPatternTranslator:
             elif (expression.comparator == ComparisonComparators.In and
                   isinstance(expression.value, SetValue)):
                 value = list(map(self._escape_value, expression.value.element_iterator()))
+            elif expression.comparator == ComparisonComparators.Like:
+                 value = self._escape_value(expression.value, "LIKE")
             else:
                 value = self._escape_value(expression.value)
 
