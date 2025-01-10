@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class QueryTranslator(BaseQueryTranslator):
 
-    def __init__(self, options, dialect, basepath):
+    def __init__(self, options, dialect, basepath, custom_mapping=None):
         super().__init__(options, dialect, basepath)
         self.supported_fields = {
             'hostname': r"hostname = '([^']+)'",
@@ -31,6 +31,8 @@ class QueryTranslator(BaseQueryTranslator):
             'tenantname': r"tenantname = '([^']+)'",
             'tenantid': r"tenantid = '([^']+)'"
         }
+        if custom_mapping:
+            self.supported_fields.update(custom_mapping)
 
     def _extract_field_values(self, query_string, field_pattern):
         match = re.search(field_pattern, query_string)
