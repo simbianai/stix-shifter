@@ -16,14 +16,14 @@ START_STOP_PATTERN = r"\s?START\s?t'\d{4}(-\d{2}){2}T\d{2}(:\d{2}){2}(\.\d{1,3})
 
 class BaseQueryTranslator(object, metaclass=ABCMeta):
 
-    def __init__(self, options, dialect, basepath):
+    def __init__(self, options, dialect, basepath, custom_mapping=None):
         self.options = options
         self.dialect = dialect
         self.map_data = {}
         self.map_operator = {}
         self.select_fields = {}
         self.logger = logger.set_logger(__name__)
-        self.map_data = self.fetch_mapping(basepath, dialect, options)
+        self.map_data = self.fetch_mapping(basepath, dialect, options, custom_mapping)
         self.map_operator = self.fetch_operators(basepath, dialect, options)
 
     def read_json(self, filepath, options):
@@ -43,7 +43,7 @@ class BaseQueryTranslator(object, metaclass=ABCMeta):
     def map_comparator(self):
         return self.map_operator
 
-    def fetch_mapping(self, basepath, dialect, options):
+    def fetch_mapping(self, basepath, dialect, options, custom_mapping=None):
         """
         Fetches STIX-to-datasource mapping JSON from the module's from_stix_map.json file
         :param basepath: path of data source translation module

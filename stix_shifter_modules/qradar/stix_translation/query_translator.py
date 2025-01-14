@@ -8,9 +8,18 @@ logger = logging.getLogger(__name__)
 
 class QueryTranslator(BaseQueryTranslator):
 
-    def __init__(self, options, dialect, basepath):
-        super().__init__(options, dialect, basepath)
-        self.select_fields = read_json(f"aql_{self.dialect}_fields", options)
+    def __init__(self, options, dialect, basepath, custom_mapping= None):
+        super().__init__(options, dialect, basepath, custom_mapping)
+        if custom_mapping:
+            self.select_fields = custom_mapping[f"{self.dialect}_fields"]
+        else:
+            self.select_fields = read_json(f"aql_{self.dialect}_fields", options)
+    
+    def fetch_mapping(self, basepath, dialect, options, custom_mapping=None):
+        if custom_mapping:
+            return custom_mapping.get(f"{dialect}_from_stix_mapping")
+        else:
+            return super().fetch_mapping(basepath, dialect, options, custom_mapping)
 
     def map_selections(self):
         return ", ".join(self.select_fields['default'])

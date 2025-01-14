@@ -31,7 +31,7 @@ class StixTransmission:
                 return return_obj
         return wrapper_func
 
-    def __init__(self, module, connection, configuration):
+    def __init__(self, module, connection, configuration, custom_mapping=None):
         module = module.split(':')[0]
         self.connector = module
         if connection.get('options', {}).get('proxy_host'):
@@ -39,6 +39,7 @@ class StixTransmission:
         try:
             connector_module = importlib.import_module("stix_shifter_modules." + module + ".entry_point")
             self.entry_point = connector_module.EntryPoint(connection, configuration, connection.get('options', {}))
+            self.entry_point.handle_custom_mapping(custom_mapping)
         except Exception as e:
             self.init_error = e
     

@@ -7,19 +7,19 @@ from stix_shifter_utils.stix_translation.src.utils.transformer_utils import get_
 
 class BaseResultTranslator(object, metaclass=ABCMeta):
 
-    def __init__(self, options, dialect, base_file_path=None, callback=None):
+    def __init__(self, options, dialect, base_file_path=None, callback=None, custom_mapping=None):
         self.dialect = dialect
         self.options = options
         self.callback = callback
         self.module_name = base_file_path.split(os.sep)[-2]
         self.logger = logger.set_logger(__name__)
-        self.map_data = self.fetch_mapping(base_file_path, dialect, options)
+        self.map_data = self.fetch_mapping(base_file_path, dialect, options, custom_mapping=custom_mapping)
         self.transformers = get_module_transformers(self.module_name)
 
     def read_json(self, filepath, options):
         return helper_read_json(filepath, options)
 
-    def fetch_mapping(self, basepath, dialect, options):
+    def fetch_mapping(self, basepath, dialect, options, custom_mapping=None):
         """
         Fetches datasource-to-STIX mapping JSON from the module's <DIALECT>_to_stix_map.json file
         :param basepath: path of data source translation module

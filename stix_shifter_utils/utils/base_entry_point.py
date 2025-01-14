@@ -77,11 +77,11 @@ class BaseEntryPoint:
         if not(self.__results_connector and self.__status_connector and self.__delete_connector and self.__query_connector):
             raise Exception('EntryPoint: one of transmission connectors is not configured')
 
-    def add_dialect(self, dialect, query_translator=None, results_translator=None, default=False, default_include=True):
+    def add_dialect(self, dialect, query_translator=None, results_translator=None, default=False, default_include=True, custom_mapping=None):
         if not query_translator:
-            query_translator = self.create_default_query_translator(dialect)
+            query_translator = self.create_default_query_translator(dialect, custom_mapping)
         if not results_translator:
-            results_translator = self.create_default_results_translator(dialect)
+            results_translator = self.create_default_results_translator(dialect, custom_mapping)
         if not (isinstance(query_translator, BaseQueryTranslator)):
             raise Exception('query_translator is not instance of BaseQueryTranslator')
         if not (isinstance(results_translator, BaseResultTranslator)):
@@ -106,16 +106,16 @@ class BaseEntryPoint:
             self.add_dialect(dialect, query_translator=query_translator, results_translator=results_translator,
                              default=is_default)
 
-    def create_default_query_translator(self, dialect):
+    def create_default_query_translator(self, dialect, custom_mapping=None):
         module_name = self.__connector_module
         module = importlib.import_module(
                     "stix_shifter_modules." + module_name + ".stix_translation.query_translator")
         basepath = os.path.dirname(module.__file__)
         mapping_filepath = os.path.abspath(basepath)
-        query_translator = module.QueryTranslator(self.__options, dialect, mapping_filepath)
+        query_translator = module.QueryTranslator(self.__options, dialect, mapping_filepath, custom_mapping)
         return query_translator
 
-    def create_default_results_translator(self, dialect):
+    def create_default_results_translator(self, dialect, custom_mapping=None):
         module_name = self.__connector_module
         dir_path = "stix_shifter_modules." + module_name + ".stix_translation"
         file_path = dir_path + ".results_translator"
@@ -123,12 +123,12 @@ class BaseEntryPoint:
             module = importlib.import_module(file_path)
             basepath = os.path.dirname(module.__file__)
             mapping_filepath = os.path.abspath(basepath)
-            results_translator = module.ResultsTranslator(self.__options, dialect, mapping_filepath)
+            results_translator = module.ResultsTranslator(self.__options, dialect, mapping_filepath, custom_mapping=custom_mapping)
         except:
             module = importlib.import_module(dir_path)
             basepath = os.path.dirname(module.__file__)
             mapping_filepath = os.path.abspath(basepath)
-            results_translator = JSONToStix(self.__options, dialect, mapping_filepath)
+            results_translator = JSONToStix(self.__options, dialect, mapping_filepath, custom_mapping=custom_mapping)
         return results_translator
 
     @translation
@@ -167,14 +167,11 @@ class BaseEntryPoint:
         """
         default_results_translator:BaseResultTranslator = self.__dialect_to_results_translator[self.__dialect_default[self.__options.get(OPTION_LANGUAGE, "stix")]]
         results_translator = copy.deepcopy(default_results_translator)
-
         for dialect, translator in self.__dialect_to_results_translator.items():
             if dialects and dialect not in dialects:
                 continue
             results_translator.map_data = {**results_translator.map_data, **translator.map_data}
-
         return results_translator
-
 
     @translation
     def get_results_translator(self, dialect:Union[str,list]=None):
@@ -362,3 +359,6 @@ class BaseEntryPoint:
 
     def is_async(self):
         return self.__async
+    
+    def handle_custom_mapping(self, custom_mapping):
+        return

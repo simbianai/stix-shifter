@@ -237,3 +237,9 @@ class ResultsTranslator(JSONToStix):
                 fix_device_event_refs(observed)
                 observed['objects'] = sort_objects(observed['objects'])
         return result
+    
+    def fetch_mapping(self, basepath, dialect, options, custom_mapping=None):
+        if custom_mapping:
+            return custom_mapping['to_stix_mapping']
+        else:
+            return super().fetch_mapping(basepath, dialect, options, custom_mapping)
