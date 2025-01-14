@@ -1,210 +1,680 @@
 {
-  "action": {
-    "key": "x-oca-event.action",
-    "object": "x-oca-event"
-  },
-  "description": {
-    "key": "x-oca-event.description",
-    "object": "x-oca-event"
-  },
-  "category": {
-    "key": "x-oca-event.category",
-    "object": "x-oca-event"
-  },
-  "severity": {
-    "key": "x-oca-event.severity",
-    "object": "x-oca-event"
-  },
-  "eventtime": {
-    "key": "x-oca-event.created",
-    "object": "x-oca-event"
-  },
-  "username": {
-    "key": "user-account.user_id",
-    "object": "user-account"
-  },
-  "sourceip": {
-    "key": "ipv4-addr.value",
-    "object": "ipv4-addr"
-  },
-  "destinationip": {
-    "key": "ipv4-addr.value",
-    "object": "ipv4-addr"
-  },
-  "ipaddress": {
-    "key": "ipv4-addr.value",
-    "object": "ipv4-addr"
-  },
-  "sourceprocessname": {
-    "key": "process.name",
-    "object": "process"
-  },
-  "resourcename": {
-    "key": "x-oca-asset.hostname",
-    "object": "x-oca-asset"
-  },
-  "resourcehostname": {
-    "key": "x-oca-asset.hostname",
-    "object": "x-oca-asset"
-  },
-  "timeline": {
-    "key": "x-oca-event.timeline",
-    "object": "x-oca-event"
-  },
-  "timeline_by_month": {
-    "key": "x-oca-event.timeline_by_month",
-    "object": "x-oca-event"
-  },
-  "timeline_by_week": {
-    "key": "x-oca-event.timeline_by_week",
-    "object": "x-oca-event"
-  },
-  "timeline_by_hour": {
-    "key": "x-oca-event.timeline_by_hour",
-    "object": "x-oca-event"
-  },
-  "timeline_by_minute": {
-    "key": "x-oca-event.timeline_by_minute",
-    "object": "x-oca-event"
-  },
-  "rg_timezoneoffset": {
-    "key": "x-oca-event.rg_timezoneoffset",
-    "object": "x-oca-event"
-  },
-  "rg_functionality": {
-    "key": "x-oca-event.rg_functionality",
-    "object": "x-oca-event"
-  },
-  "rg_resourcetypeid": {
-    "key": "x-oca-event.rg_resourcetypeid",
-    "object": "x-oca-event"
-  },
-  "rg_vendor": {
-    "key": "x-oca-event.rg_vendor",
-    "object": "x-oca-event"
-  },
-  "resourcegroupname": {
-    "key": "x-oca-event.resourcegroupname",
-    "object": "x-oca-event"
-  },
-  "resourcegroupid": {
-    "key": "x-oca-event.resourcegroupid",
-    "object": "x-oca-event"
-  },
-  "accountresourcekey": {
-    "key": "x-oca-event.accountresourcekey",
-    "object": "x-oca-event"
-  },
-  "accountname": {
-    "key": "x-oca-event.accountname",
-    "object": "x-oca-event"
-  },
-  "userid": {
-    "key": "x-oca-event.userid",
-    "object": "x-oca-event"
-  },
-  "tenantid": {
-    "key": "x-oca-event.tenantid",
-    "object": "x-oca-event"
-  },
-  "tenantname": {
-    "key": "x-oca-event.tenantname",
-    "object": "x-oca-event"
-  },
-  "eventid": {
-    "key": "x-oca-event.eventid",
-    "object": "x-oca-event"
-  },
-  "id": {
-    "key": "x-oca-event.id",
-    "object": "x-oca-event"
-  },
-  "jobid": {
-    "key": "x-oca-event.jobid",
-    "object": "x-oca-event"
-  },
-  "ingestionnodeid": {
-    "key": "x-oca-event.ingestionnodeid",
-    "object": "x-oca-event"
-  },
-  "routekey": {
-    "key": "x-oca-event.routekey",
-    "object": "x-oca-event"
-  },
-  "datetime": {
-    "key": "x-oca-event.datetime",
-    "object": "x-oca-event"
-  },
-  "collectiontimestamp": {
-    "key": "x-oca-event.collectiontimestamp",
-    "object": "x-oca-event"
-  },
-  "receivedtime": {
-    "key": "x-oca-event.receivedtime",
-    "object": "x-oca-event"
-  },
-  "publishedtime": {
-    "key": "x-oca-event.publishedtime",
-    "object": "x-oca-event"
-  },
-  "categorizedtime": {
-    "key": "x-oca-event.categorizedtime",
-    "object": "x-oca-event"
-  },
-  "jobstarttime": {
-    "key": "x-oca-event.jobstarttime",
-    "object": "x-oca-event"
-  },
-  "_indexed_at_tdt": {
-    "key": "x-oca-event._indexed_at_tdt",
-    "object": "x-oca-event"
-  },
-  "collectionmethod": {
-    "key": "x-oca-event.collectionmethod",
-    "object": "x-oca-event"
-  },
-  "categoryseverity": {
-    "key": "x-oca-event.categoryseverity",
-    "object": "x-oca-event"
-  },
-  "version": {
-    "key": "x-oca-event.version",
-    "object": "x-oca-event"
-  },
-  "year": {
-    "key": "x-oca-event.year",
-    "object": "x-oca-event"
-  },
-  "month": {
-    "key": "x-oca-event.month",
-    "object": "x-oca-event"
-  },
-  "week": {
-    "key": "x-oca-event.week",
-    "object": "x-oca-event"
-  },
-  "dayofyear": {
-    "key": "x-oca-event.dayofyear",
-    "object": "x-oca-event"
-  },
-  "dayofmonth": {
-    "key": "x-oca-event.dayofmonth",
-    "object": "x-oca-event"
-  },
-  "dayofweek": {
-    "key": "x-oca-event.dayofweek",
-    "object": "x-oca-event"
-  },
-  "hour": {
-    "key": "x-oca-event.hour",
-    "object": "x-oca-event"
-  },
-  "minute": {
-    "key": "x-oca-event.minute",
-    "object": "x-oca-event"
-  },
-  "customfield2": {
-    "key": "x-oca-event.customfield2",
-    "object": "x-oca-event"
-  }
+  "sourceaddress": [
+    {
+      "key": "ipv4-addr.value",
+      "object": "src_ip"
+    },
+    {
+      "key": "network-traffic.src_ref",
+      "object": "nt",
+      "references": "src_ip"
+    }
+  ],
+  "destinationaddress": [
+    {
+      "key": "ipv4-addr.value",
+      "object": "dst_ip"
+    },
+    {
+      "key": "network-traffic.dst_ref",
+      "object": "nt",
+      "references": "dst_ip"
+    }
+  ],
+  "ipaddress": [
+    {
+      "key": "ipv4-addr.value"
+    }
+  ],
+  "sourceaddressv6": [
+    {
+      "key": "ipv6-addr.value",
+      "object": "src_ipv6"
+    },
+    {
+      "key": "network-traffic.src_ref",
+      "object": "nt",
+      "references": "src_ipv6"
+    }
+  ],
+  "destinationaddressv6": [
+    {
+      "key": "ipv6-addr.value",
+      "object": "dst_ipv6"
+    },
+    {
+      "key": "network-traffic.dst_ref",
+      "object": "nt",
+      "references": "dst_ipv6"
+    }
+  ],
+  "ipaddressv6": [
+    {
+      "key": "ipv6-addr.value"
+    }
+  ],
+  "sourceport": [
+    {
+      "key": "network-traffic.src_port",
+      "object": "nt"
+    }
+  ],
+  "destinationport": [
+    {
+      "key": "network-traffic.dst_port",
+      "object": "nt"
+    }
+  ],
+  "transportprotocol": [
+    {
+      "key": "network-traffic.protocols",
+      "object": "nt"
+    }
+  ],
+  "applicationprotocol": [
+    {
+      "key": "network-traffic.protocols",
+      "object": "nt"
+    }
+  ],
+  "eventtime": [
+    {
+      "key": "network-traffic.start",
+      "object": "nt"
+    },
+    {
+      "key": "network-traffic.end",
+      "object": "nt"
+    },
+    {
+      "key": "x-oca-event.created",
+      "object": "event"
+    }
+  ],
+  "processname": [
+    {
+      "key": "process.name",
+      "object": "proc"
+    },
+    {
+      "key": "x-oca-event.process_name",
+      "object": "event"
+    }
+  ],
+  "sourceprocessname": [
+    {
+      "key": "process.name",
+      "object": "src_proc"
+    }
+  ],
+  "destinationprocessname": [
+    {
+      "key": "process.name",
+      "object": "dst_proc"
+    }
+  ],
+  "processid": [
+    {
+      "key": "process.pid",
+      "object": "proc"
+    },
+    {
+      "key": "x-oca-event.process_id",
+      "object": "event"
+    }
+  ],
+  "sourceprocessid": [
+    {
+      "key": "process.pid",
+      "object": "src_proc"
+    }
+  ],
+  "destinationprocessid": [
+    {
+      "key": "process.pid",
+      "object": "dst_proc"
+    }
+  ],
+  "commandline": [
+    {
+      "key": "process.command_line",
+      "object": "proc"
+    }
+  ],
+  "processcommandline": [
+    {
+      "key": "process.command_line",
+      "object": "proc"
+    }
+  ],
+  "parentprocessid": [
+    {
+      "key": "process.parent_ref.pid",
+      "object": "proc"
+    }
+  ],
+  "parentprocessname": [
+    {
+      "key": "process.parent_ref.name",
+      "object": "proc"
+    }
+  ],
+  "accountname": [
+    {
+      "key": "user-account.user_id",
+      "object": "user"
+    },
+    {
+      "key": "process.creator_user_ref",
+      "object": "proc",
+      "references": "user"
+    },
+    {
+      "key": "x-oca-event.user_ref",
+      "object": "event",
+      "references": "user"
+    }
+  ],
+  "username": [
+    {
+      "key": "user-account.user_id",
+      "object": "user"
+    },
+    {
+      "key": "process.creator_user_ref",
+      "object": "proc",
+      "references": "user"
+    },
+    {
+      "key": "x-oca-event.user_ref",
+      "object": "event",
+      "references": "user"
+    }
+  ],
+  "processfilename": [
+    {
+      "key": "process.binary_ref",
+      "object": "proc"
+    }
+  ],
+  "binarypath": [
+    {
+      "key": "process.binary_ref",
+      "object": "proc"
+    }
+  ],
+  "currentdirectory": [
+    {
+      "key": "process.cwd",
+      "object": "proc"
+    }
+  ],
+  "processstarttime": [
+    {
+      "key": "process.created",
+      "object": "proc"
+    }
+  ],
+  "imagefilename": [
+    {
+      "key": "process.image_ref",
+      "object": "proc"
+    }
+  ],
+  "filename": [
+    {
+      "key": "file.name",
+      "object": "file"
+    }
+  ],
+  "sourcefilename": [
+    {
+      "key": "file.name",
+      "object": "src_file"
+    }
+  ],
+  "destinationfilename": [
+    {
+      "key": "file.name",
+      "object": "dst_file"
+    }
+  ],
+  "filepath": [
+    {
+      "key": "file.path",
+      "object": "file"
+    }
+  ],
+  "sourcefilepath": [
+    {
+      "key": "file.path",
+      "object": "src_file"
+    }
+  ],
+  "destinationfilepath": [
+    {
+      "key": "file.path",
+      "object": "dst_file"
+    }
+  ],
+  "filehash": [
+    {
+      "key": "file.hashes.MD5",
+      "object": "file"
+    }
+  ],
+  "md5hash": [
+    {
+      "key": "file.hashes.MD5",
+      "object": "file"
+    }
+  ],
+  "sha1hash": [
+    {
+      "key": "file.hashes.SHA-1",
+      "object": "file"
+    }
+  ],
+  "sha256hash": [
+    {
+      "key": "file.hashes.SHA-256",
+      "object": "file"
+    }
+  ],
+  "filesize": [
+    {
+      "key": "file.size",
+      "object": "file"
+    }
+  ],
+  "filecreationtime": [
+    {
+      "key": "file.created",
+      "object": "file"
+    }
+  ],
+  "filemodifiedtime": [
+    {
+      "key": "file.modified",
+      "object": "file"
+    }
+  ],
+  "fileaccesstime": [
+    {
+      "key": "file.accessed",
+      "object": "file"
+    }
+  ],
+  "parentdirectory": [
+    {
+      "key": "file.parent_directory_ref",
+      "object": "file"
+    }
+  ],
+  "directorypath": [
+    {
+      "key": "directory.path",
+      "object": "dir"
+    }
+  ],
+  "directorycreationtime": [
+    {
+      "key": "directory.created",
+      "object": "dir"
+    }
+  ],
+  "directorymodifiedtime": [
+    {
+      "key": "directory.modified",
+      "object": "dir"
+    }
+  ],
+  "accounttype": [
+    {
+      "key": "user-account.account_type",
+      "object": "user"
+    }
+  ],
+  "displayname": [
+    {
+      "key": "user-account.display_name",
+      "object": "user"
+    }
+  ],
+  "userdisplayname": [
+    {
+      "key": "user-account.display_name",
+      "object": "user"
+    }
+  ],
+  "userdomain": [
+    {
+      "key": "user-account.domain",
+      "object": "user"
+    }
+  ],
+  "accountdomain": [
+    {
+      "key": "user-account.domain",
+      "object": "user"
+    }
+  ],
+  "privileges": [
+    {
+      "key": "user-account.privileges",
+      "object": "user"
+    }
+  ],
+  "accountprivileges": [
+    {
+      "key": "user-account.privileges",
+      "object": "user"
+    }
+  ],
+  "accountcreationtime": [
+    {
+      "key": "user-account.created",
+      "object": "user"
+    }
+  ],
+  "registrykey": [
+    {
+      "key": "windows-registry-key.key",
+      "object": "reg"
+    }
+  ],
+  "registrykeypath": [
+    {
+      "key": "windows-registry-key.key",
+      "object": "reg"
+    }
+  ],
+  "registryvaluename": [
+    {
+      "key": "windows-registry-key.values.name",
+      "object": "reg"
+    }
+  ],
+  "registryvaluedata": [
+    {
+      "key": "windows-registry-key.values.data",
+      "object": "reg"
+    }
+  ],
+  "registrymodifiedtime": [
+    {
+      "key": "windows-registry-key.modified",
+      "object": "reg"
+    }
+  ],
+  "emailaddress": [
+    {
+      "key": "email-addr.value",
+      "object": "email_addr"
+    }
+  ],
+  "sourceemailaddress": [
+    {
+      "key": "email-addr.value",
+      "object": "src_email"
+    }
+  ],
+  "destinationemailaddress": [
+    {
+      "key": "email-addr.value",
+      "object": "dst_email"
+    }
+  ],
+  "emaildisplayname": [
+    {
+      "key": "email-addr.display_name",
+      "object": "email_addr"
+    }
+  ],
+  "emailsubject": [
+    {
+      "key": "email-message.subject",
+      "object": "email_msg"
+    }
+  ],
+  "emailsender": [
+    {
+      "key": "email-message.sender_ref",
+      "object": "email_msg"
+    }
+  ],
+  "emailrecipient": [
+    {
+      "key": "email-message.to_refs",
+      "object": "email_msg"
+    }
+  ],
+  "emailccrecipient": [
+    {
+      "key": "email-message.cc_refs",
+      "object": "email_msg"
+    }
+  ],
+  "emailbody": [
+    {
+      "key": "email-message.body",
+      "object": "email_msg"
+    }
+  ],
+  "emailreplyto": [
+    {
+      "key": "email-message.additional_header_fields.Reply-To",
+      "object": "email_msg"
+    }
+  ],
+  "payloaddata": [
+    {
+      "key": "artifact.payload_bin",
+      "object": "artifact"
+    }
+  ],
+  "payloadtype": [
+    {
+      "key": "artifact.mime_type",
+      "object": "artifact"
+    }
+  ],
+  "payloadhash": [
+    {
+      "key": "artifact.hashes.MD5",
+      "object": "artifact"
+    }
+  ],
+  "domain": [
+    {
+      "key": "domain-name.value",
+      "object": "domain"
+    },
+    {
+      "key": "x-oca-event.domain",
+      "object": "event"
+    }
+  ],
+  "sourcedomain": [
+    {
+      "key": "domain-name.value",
+      "object": "src_domain"
+    }
+  ],
+  "destinationdomain": [
+    {
+      "key": "domain-name.value",
+      "object": "dst_domain"
+    }
+  ],
+  "deviceaction": [
+    {
+      "key": "x-oca-event.action",
+      "object": "event"
+    }
+  ],
+  "eventaction": [
+    {
+      "key": "x-oca-event.action",
+      "object": "event"
+    }
+  ],
+  "categoryoutcome": [
+    {
+      "key": "x-oca-event.outcome",
+      "object": "event"
+    }
+  ],
+  "eventoutcome": [
+    {
+      "key": "x-oca-event.outcome",
+      "object": "event"
+    }
+  ],
+  "category": [
+    {
+      "key": "x-oca-event.category",
+      "object": "event"
+    }
+  ],
+  "eventcategory": [
+    {
+      "key": "x-oca-event.category",
+      "object": "event"
+    }
+  ],
+  "devicehostname": [
+    {
+      "key": "x-oca-event.hostname",
+      "object": "event"
+    },
+    {
+      "key": "x-oca-asset.hostname",
+      "object": "asset"
+    }
+  ],
+  "hostname": [
+    {
+      "key": "x-oca-event.hostname",
+      "object": "event"
+    },
+    {
+      "key": "x-oca-asset.hostname",
+      "object": "asset"
+    }
+  ],
+  "resourcegroupname": [
+    {
+      "key": "x-oca-event.provider",
+      "object": "event"
+    }
+  ],
+  "severity": [
+    {
+      "key": "x-oca-event.severity",
+      "object": "event"
+    }
+  ],
+  "eventseverity": [
+    {
+      "key": "x-oca-event.severity",
+      "object": "event"
+    }
+  ],
+  "eventtype": [
+    {
+      "key": "x-oca-event.type",
+      "object": "event"
+    }
+  ],
+  "sourcemacaddress": [
+    {
+      "key": "x-oca-asset.mac_refs",
+      "object": "asset"
+    }
+  ],
+  "destinationmacaddress": [
+    {
+      "key": "x-oca-asset.mac_refs",
+      "object": "asset"
+    }
+  ],
+  "macaddress": [
+    {
+      "key": "x-oca-asset.mac_refs",
+      "object": "asset"
+    }
+  ],
+  "assettype": [
+    {
+      "key": "x-oca-asset.type",
+      "object": "asset"
+    }
+  ],
+  "resourcetype": [
+    {
+      "key": "x-oca-asset.type",
+      "object": "asset"
+    }
+  ],
+  "assetname": [
+    {
+      "key": "x-oca-asset.name",
+      "object": "asset"
+    },
+    {
+      "key": "x-oca-asset.os",
+      "object": "asset"
+    },
+    {
+      "key": "x-oca-asset.os_name",
+      "object": "asset"
+    },
+    {
+      "key": "x-oca-asset.os_version",
+      "object": "asset"
+    }
+  ],
+  "resourcename": [
+    {
+      "key": "x-oca-asset.name",
+      "object": "asset"
+    },
+    {
+      "key": "x-oca-asset.os",
+      "object": "asset"
+    },
+    {
+      "key": "x-oca-asset.os_name",
+      "object": "asset"
+    },
+    {
+      "key": "x-oca-asset.os_version",
+      "object": "asset"
+    }
+  ],
+  "systemarchitecture": [
+    {
+      "key": "x-oca-asset.architecture",
+      "object": "asset"
+    }
+  ],
+  "assetvendor": [
+    {
+      "key": "x-oca-asset.vendor",
+      "object": "asset"
+    }
+  ],
+  "assetversion": [
+    {
+      "key": "x-oca-asset.version",
+      "object": "asset"
+    }
+  ],
+  "assetdomain": [
+    {
+      "key": "x-oca-asset.domain",
+      "object": "asset"
+    }
+  ]
 }

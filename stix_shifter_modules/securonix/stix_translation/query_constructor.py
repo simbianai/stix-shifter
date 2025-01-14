@@ -78,15 +78,8 @@ class SecuronixQueryStringPatternTranslator:
                 return " OR ".join(f"{field} NOT NULL" for field in mapped_fields_array)
 
         for mapped_field in mapped_fields_array:
-            if mapped_field in ['sourceaddress', 'destinationaddress', 'ipaddress']:
-                if comparator == "LIKE" and isinstance(value, str) and '*' in value:
-                    comparison_strings.append(f"{mapped_field} NOT NULL")
-                else:
-                    if comparator == "IN":
-                        comparison_strings.append(f"{mapped_field} IN ({value})")
-                    else:
-                        escaped_value = self._escape_value(value, comparator)
-                        comparison_strings.append(f"{mapped_field} {comparator} {escaped_value}")
+            if comparator == "LIKE" and isinstance(value, str) and '*' in value:
+                comparison_strings.append(f"{mapped_field} NOT NULL")
             else:
                 if comparator == "IN":
                     comparison_strings.append(f"{mapped_field} IN ({value})")
