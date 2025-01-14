@@ -25,8 +25,6 @@ class BaseResultTranslator(object, metaclass=ABCMeta):
         :param basepath: path of data source translation module
         :type basepath: str
         """
-        if custom_mapping:
-            return custom_mapping['to_stix_mapping']
         stix_2_0_mapping_directory_path = os.path.join(basepath, 'json')
         stix_2_1_mapping_directory_path = os.path.join(basepath, 'json/stix_2_1')
         mapping_file = f'{dialect}_to_stix_map.json'

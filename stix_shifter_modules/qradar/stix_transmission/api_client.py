@@ -1,3 +1,4 @@
+import json
 from stix_shifter_utils.stix_transmission.utils.RestApiClientAsync import (
     RestApiClientAsync,
 )
@@ -135,6 +136,57 @@ class APIClient:
         return await self.client.call_api(
             endpoint, "POST", data=data, timeout=self.timeout
         )
+
+    async def get_table_columns(self, database_name: str):
+        """
+        Retrieve the columns defined for a specific Ariel database.
+        Endpoint: GET /ariel/databases/{database_name}
+
+        Args:
+            database_name (str): The name of the Ariel database.
+
+        Returns:
+            list: A list of column definitions (name, indexable, argument_type), or an empty list on failure.
+        """
+        endpoint = f"{self.endpoint_start}databases/{database_name}"
+        try:
+            # Make the API call
+            response = await self.client.call_api(endpoint, "GET", timeout=self.timeout)
+
+            # Handle response
+            if response.code == 200:
+                try:
+                    json_body = (
+                        response.read()
+                    )  # Replace with `await response.read()` if asynchronous
+                    data = json.loads(json_body)
+                    return data.get("columns", [])
+                except json.JSONDecodeError:
+                    self.logger.error(
+                        f"Failed to parse JSON response for database: {database_name}"
+                    )
+            elif response.code == 404:
+                self.logger.error(
+                    f"Database not found: {database_name} (status code 404)"
+                )
+            elif response.code == 422:
+                self.logger.error(
+                    f"Invalid request parameter for database: {database_name} (status code 422)"
+                )
+            elif response.code == 500:
+                self.logger.error(
+                    f"Server error while retrieving columns for database: {database_name} (status code 500)"
+                )
+            else:
+                self.logger.error(
+                    f"Unexpected response code {response.code} while retrieving columns for database: {database_name}"
+                )
+        except Exception as e:
+            self.logger.error(
+                f"An exception occurred while retrieving columns for database {database_name}: {e}"
+            )
+
+        return []
 
     async def delete_search(self, search_id):
         # Sends a DELETE request to
