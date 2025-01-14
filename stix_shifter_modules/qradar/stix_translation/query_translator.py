@@ -19,7 +19,7 @@ class QueryTranslator(BaseQueryTranslator):
         if custom_mapping:
             return custom_mapping.get(f"{dialect}_from_stix_mapping")
         else:
-            super().fetch_mapping(basepath, dialect, options, custom_mapping)
+            return super().fetch_mapping(basepath, dialect, options, custom_mapping)
 
     def map_selections(self):
         return ", ".join(self.select_fields['default'])
