@@ -67,7 +67,7 @@
     "\"DNS Request Domain\" as dnsdomainname",
     "\"Process_Path\" as Image",
     "\"Parent_Process_Path\" as ParentImage",
-    "\"Process CommandLine\" as ProcessCommandLine",
+    "\"Command\" as ProcessCommandLine",
     "\"Parent_Command\" as ParentCommandLine",
     "\"Target_Process_Path\" as TargetImage",
     "\"Registry_Value_Name\" as RegistryValueName",
