@@ -109,6 +109,10 @@ class BaseQueryTranslator(object, metaclass=ABCMeta):
         # if query_translator.get_language() == 'stix':
         if self.options.get('validate_pattern'):
             self._validate_pattern(data)
+        print(50*"*")
+        print("This is the data inside transform_query")
+        print(data)
+        print(50*"*")
         antlr_parsing = generate_query(data)
         stripped_parsing = strip_unmapped_attributes(antlr_parsing, self)
         antlr_parsing = stripped_parsing.get('parsing')

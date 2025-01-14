@@ -77,6 +77,9 @@ class StixTranslation:
                     sys.setrecursionlimit(recursion_limit)
 
                 if translate_type == QUERY:
+                    print(50*"*")
+                    print("We are hitting translate_async of StixTranslation")
+                    print(50*"*")
                     # Carbon Black combines the mapping files into one JSON using process and binary keys.
                     # The query constructor has some logic around which of the two are used.
                     queries = []
@@ -165,6 +168,10 @@ class StixTranslation:
         :return: translated results
         :rtype: str
         """
+        print(50*"*")
+        print("This inside the translate function of StixTranslation")
+        print(data)
+        print(50*"*")
         return run_in_thread(self.translate_async, module, translate_type, data_source, data, options, recursion_limit, custom_mapping)
 
        

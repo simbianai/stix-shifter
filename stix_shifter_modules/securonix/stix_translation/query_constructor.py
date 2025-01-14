@@ -6,12 +6,11 @@ from datetime import datetime, timedelta
 import os
 import json
 
-
 class SecuronixQueryStringPatternTranslator:
+    """
+    Translates STIX pattern into Securonix Spotter query format
+    """
     QUERIES = []
-    """
-    Stix to Securonix query translation
-    """
 
     def __init__(self, pattern: Pattern, data_model_mapper, time_range):
         self.dmm = data_model_mapper
@@ -28,176 +27,230 @@ class SecuronixQueryStringPatternTranslator:
         with open(file_path, 'r') as f:
             return json.load(f)
 
+    @staticmethod
+    def _format_set(values) -> str:
+        gen = values.element_iterator()
+        return ','.join(str(value) for value in gen)
 
     @staticmethod
     def _escape_value(value, comparator=None) -> str:
         if isinstance(value, str):
-             if comparator == "LIKE":
-                return '{}'.format(
-                    value.replace('\\', '\\\\').replace('\"', '\\"').replace('(', '\\(').replace(')', '\\)').replace(
-                        ' ', '\\ ').replace('%', '*').replace('_', '?'))
-             else:
-                return '{}'.format(
-                    value.replace('\\', '\\\\').replace('\"', '\\"').replace('(', '\\(').replace(')', '\\)').replace(
-                        ' ', '\\ '))
+            if comparator == "LIKE":
+                value = value.replace('%', '*').replace('_', '?')
+            elif comparator == "MATCHES":
+                pass
+            return f'"{value}"'
+        elif isinstance(value, (int, float)):
+            return str(value)
         else:
-            return value
+            return f'"{str(value)}"'
 
     @staticmethod
-    def _to_securonix_timestamp(ts: str) -> str:
-        stripped = ts[2:-2]
-        if '.' in stripped:
-            stripped = stripped.split('.', 1)[0]
-        return str(int(datetime.fromisoformat(stripped).timestamp()))
+    def _format_datetime(timestamp_string):
+        # Remove quotes and 't' prefix/suffix from timestamp
+        cleaned = timestamp_string[2:-2]  # Removes t' and '
+        if '.' in cleaned:
+            cleaned = cleaned.split('.', 1)[0]
+        dt = datetime.fromisoformat(cleaned.replace('Z', '+00:00'))
+        return dt.strftime('%m/%d/%Y %H:%M:%S')
 
-    def _format_start_stop_qualifier(self, expression, qualifier: StartStopQualifier) -> str:
-        start = self._to_securonix_timestamp(qualifier.start)
-        stop = self._to_securonix_timestamp(qualifier.stop)
-        start_stop_query = "(eventtime >= {} AND eventtime <= {})".format(start, stop)
-        return "({}) AND {}".format(expression, start_stop_query)
-
-    @staticmethod
-    def _parse_mapped_fields(value, comparator, mapped_fields_array) -> str:
-        comp_str = ""
-        comparison_strings = []
-
-        # Extended field mappings
-        extended_fields = {
-            'hostname': 'hostname',
-            'sourcemacaddress': 'sourcemacaddress',
-            'resourcename': 'resourcename',
-            'resourcetype': 'resourcetype',
-            'destinationmacaddress': 'destinationmacaddress',
-            'destinationport': 'destinationport',
-            'categoryseverity': 'categoryseverity',
-            'categoryid': 'categoryid',
-            'resourcegroupid': 'resourcegroupid',
-            'sourceport': 'sourceport',
-            'devicehostname': 'devicehostname',
-            'rg_vendor': 'rg_vendor',
-            'rg_functionality': 'rg_functionality',
-            'tenantname': 'tenantname',
-            'tenantid': 'tenantid'
+    def _format_start_stop_qualifier(self, expression: str, qualifier: StartStopQualifier) -> dict:
+        """Returns a structured output with query and parameters"""
+        start_time = self._format_datetime(qualifier.start)
+        stop_time = self._format_datetime(qualifier.stop)
+        
+        return {
+            'query': expression,
+            'parameters': {
+                'eventtime_from': start_time,
+                'eventtime_to': stop_time
+            }
         }
 
+    def _parse_mapped_fields(self, value, comparator, mapped_fields_array) -> str:
+        comparison_strings = []
+
+        if isinstance(value, SetValue):
+            value = self._format_set(value)
+        
         if isinstance(value, str):
-            value = [value]
-        if isinstance(value, int):
-            value = [value]
+            if comparator == "LIKE" and value.strip('*?') == '':
+                return " OR ".join(f"{field} NOT NULL" for field in mapped_fields_array)
 
-        for val in value:
-            for mapped_field in mapped_fields_array:
-                field_name = extended_fields.get(mapped_field, mapped_field)
-                comparison_strings.append(f"{field_name} {comparator} '{val}'")
-
-        if len(comparison_strings) == 1:
-            comp_str = comparison_strings[0]
-        elif len(comparison_strings) > 1:
-            comp_str = f"({' OR '.join(comparison_strings)})"
-        else:
-            raise RuntimeError(f'Failed to convert {mapped_fields_array} mapped fields into query string')
-
-        return comp_str
-
-    def _parse_expression(self, expression, qualifier=None):
-        if isinstance(expression, ComparisonExpression):
-            # Base Case
-            # Resolve STIX Object Path to a field in the target Data Model
-            stix_object, stix_field = expression.object_path.split(':')
-
-            mapped_fields_array = self.dmm.map_field(stix_object, stix_field)
-            query_string = ""
-            comparator = self.comparator_lookup[str(expression.comparator)]
-            if expression.negated and expression.comparator == ComparisonComparators.Equal:
-                comparator = self._get_negate_comparator()
-                value = self._escape_value(expression.value)
-            elif expression.comparator == ComparisonComparators.NotEqual and not expression.negated:
-                comparator = self._get_negate_comparator()
-                value = self._escape_value(expression.value)
-            elif (expression.comparator == ComparisonComparators.In and
-                  isinstance(expression.value, SetValue)):
-                value = list(map(self._escape_value, expression.value.element_iterator()))
-            elif expression.comparator == ComparisonComparators.Like:
-                 value = self._escape_value(expression.value, "LIKE")
-            else:
-                value = self._escape_value(expression.value)
-
-            query_string = self._parse_mapped_fields(
-                value=value,
-                comparator=comparator,
-                mapped_fields_array=mapped_fields_array
-            )
-
-            if qualifier is not None:
-                if isinstance(qualifier, StartStopQualifier):
-                    query_string = self._format_start_stop_qualifier(query_string, qualifier)
+        for mapped_field in mapped_fields_array:
+            if mapped_field in ['sourceaddress', 'destinationaddress', 'ipaddress']:
+                if comparator == "LIKE" and isinstance(value, str) and '*' in value:
+                    comparison_strings.append(f"{mapped_field} NOT NULL")
                 else:
-                    raise RuntimeError("Unknown Qualifier: {}".format(qualifier))
+                    if comparator == "IN":
+                        comparison_strings.append(f"{mapped_field} IN ({value})")
+                    else:
+                        escaped_value = self._escape_value(value, comparator)
+                        comparison_strings.append(f"{mapped_field} {comparator} {escaped_value}")
+            else:
+                if comparator == "IN":
+                    comparison_strings.append(f"{mapped_field} IN ({value})")
+                else:
+                    escaped_value = self._escape_value(value, comparator)
+                    comparison_strings.append(f"{mapped_field} {comparator} {escaped_value}")
 
-            return '({})'.format(query_string)
+        return f"({' OR '.join(comparison_strings)})" if comparison_strings else ""
+
+    def _parse_expression(self, expression, qualifier=None) -> dict:
+        if isinstance(expression, ComparisonExpression):  # Base Case
+            # Map STIX Object and field to Securonix field
+            stix_object, stix_field = expression.object_path.split(':')
+            mapped_fields = self.dmm.map_field(stix_object, stix_field)
+            
+            if not mapped_fields:
+                return {"query": "", "parameters": {}}
+
+            # Get comparison operator 
+            if expression.negated:
+                if expression.comparator == ComparisonComparators.Equal:
+                    comparator = "!="
+                elif expression.comparator == ComparisonComparators.Like:
+                    comparator = "NOT CONTAINS"
+                else:
+                    comparator = self._get_negate_comparator()
+            else:
+                # For non-negated LIKE comparator, handle wildcards
+                if expression.comparator == ComparisonComparators.Like:
+                    # Check if value exists and handle accordingly
+                    if not hasattr(expression, 'value') or expression.value is None:
+                        # Return a default query when value is missing or None
+                        query_string = " OR ".join(f"{field} NOT NULL" for field in mapped_fields)
+                        return {"query": query_string, "parameters": {}}
+                        
+                    if isinstance(expression.value, str):
+                        if expression.value.strip('%') == '':
+                            # Handle pure wildcard case - translate to NOT NULL
+                            query_string = " OR ".join(f"{field} NOT NULL" for field in mapped_fields)
+                            return {"query": query_string, "parameters": {}}
+                        else:
+                            comparator = "CONTAINS"  # Change from "LIKE"
+                    else:
+                        # Handle non-string value for LIKE comparator
+                        comparator = "CONTAINS"
+                else:
+                    comparator = self.comparator_lookup.get(str(expression.comparator))
+                    if not comparator:
+                        raise RuntimeError(f"Unknown Comparison Operator: {expression.comparator}")
+
+            query_string = self._parse_mapped_fields(expression.value, comparator, mapped_fields)
+            return {"query": query_string, "parameters": {}}
 
         elif isinstance(expression, CombinedComparisonExpression):
-            # Wrap nested combined comparison expressions in parentheses
-            f1 = "({})" if isinstance(expression.expr2, CombinedComparisonExpression) else "{}"
-            f2 = "({})" if isinstance(expression.expr1, CombinedComparisonExpression) else "{}"
+            exp1 = self._parse_expression(expression.expr1)
+            exp2 = self._parse_expression(expression.expr2)
+            operator = self.comparator_lookup.get(str(expression.operator))
 
-            query_string = (f1 + " {} " + f2).format(self._parse_expression(expression.expr2),
-                                                     self.comparator_lookup[str(expression.operator)],
-                                                     self._parse_expression(expression.expr1))
-            if qualifier is not None:
-                if isinstance(qualifier, StartStopQualifier):
-                    return self._format_start_stop_qualifier(query_string, qualifier)
-                else:
-                    raise RuntimeError("Unknown Qualifier: {}".format(qualifier))
-            else:
-                return "{}".format(query_string)
+            if not operator:
+                raise RuntimeError(f"Unknown Operator: {expression.operator}")
+
+            # Handle cases where either expression might return None
+            if not exp1 or not exp2:
+                return {"query": "", "parameters": {}}
+
+            query = f"({exp1.get('query', '')} {operator} {exp2.get('query', '')})"
+            parameters = {**exp1.get('parameters', {}), **exp2.get('parameters', {})}
+            return {"query": query, "parameters": parameters}
+
         elif isinstance(expression, ObservationExpression):
-            query_string = self._parse_expression(expression.comparison_expression, qualifier=qualifier)
-            return query_string
-        elif isinstance(expression, CombinedObservationExpression):
-            expr1 = self._parse_expression(expression.expr1, qualifier=qualifier)
-            expr2 = self._parse_expression(expression.expr2, qualifier=qualifier)
-            if (not isinstance(expr1, list)):
-                SecuronixQueryStringPatternTranslator.QUERIES.extend([expr1])
-            if (not isinstance(expr2, list)):
-                SecuronixQueryStringPatternTranslator.QUERIES.extend([expr2])
-            return SecuronixQueryStringPatternTranslator.QUERIES
+            result = self._parse_expression(expression.comparison_expression, qualifier)
+            if result is None:
+                return {"query": "", "parameters": {}}
+            return result
+
         elif isinstance(expression, Pattern):
-            return self._parse_expression(expression.expression)
-        elif hasattr(expression, 'qualifier') and hasattr(expression, 'observation_expression'):
-            return self._parse_expression(expression.observation_expression, expression)
+            if hasattr(expression, 'expression'):
+                if isinstance(expression.expression, StartStopQualifier):
+                    # First get the inner query from the observation expression
+                    inner_result = self._parse_expression(expression.expression.observation_expression)
+                    if inner_result is None:
+                        inner_result = {"query": "", "parameters": {}}
+                    # Then apply the time qualifier
+                    return self._format_start_stop_qualifier(inner_result.get('query', ''), expression.expression)
+                return self._parse_expression(expression.expression)
+
+        elif isinstance(expression, StartStopQualifier):
+            # Parse the observation expression with the qualifier
+            result = self._parse_expression(expression.observation_expression)
+            if result is None:
+                result = {"query": "", "parameters": {}}
+            return self._format_start_stop_qualifier(result.get("query", ""), expression)
+
         else:
-            raise RuntimeError("Unknown Recursion Case for expression={}, type(expression)={}".format(
-                expression, type(expression)))
+            raise RuntimeError(f"Unknown expression type: {type(expression)}")
+
+        # Default return to handle any other cases
+        return {"query": "", "parameters": {}}
+        
+    def _format_start_stop_qualifier(self, expression: str, qualifier: StartStopQualifier) -> dict:
+        """Returns a structured output with query and parameters"""
+        # Remove the 't' prefix/suffix and quotes from timestamp
+        start_time = qualifier.start.replace("t'", "").replace("'", "")
+        stop_time = qualifier.stop.replace("t'", "").replace("'", "")
+        
+        # Convert to Securonix format
+        start_dt = datetime.fromisoformat(start_time.replace('Z', '+00:00'))
+        stop_dt = datetime.fromisoformat(stop_time.replace('Z', '+00:00'))
+        
+        formatted_start = start_dt.strftime('%m/%d/%Y %H:%M:%S')
+        formatted_stop = stop_dt.strftime('%m/%d/%Y %H:%M:%S')
+        
+        return {
+            'query': expression if expression else "(sourceaddress NOT NULL OR destinationaddress NOT NULL)",
+            'parameters': {
+                'eventtime_from': formatted_start,
+                'eventtime_to': formatted_stop
+            }
+        }
 
     def _get_negate_comparator(self):
         return self.comparator_lookup["ComparisonComparators.NotEqual"]
 
-    def _add_default_timerange(self, query):
-        if self.time_range and 'eventtime' not in query:
-            d = (datetime.today() - timedelta(hours=0, minutes=self.time_range)).timestamp()
-            n_query = "(({}) AND eventtime >= {})".format(query, int(d))
-            return n_query
-
-        return query
-
-    def _add_default_timerange_to_queries(self, queries):
-        n_queries = list()
-        if not isinstance(queries, list):
-            queries = [queries]
-        for q in queries:
-            n_queries.append(self._add_default_timerange(q))
-
-        return n_queries
+    def _add_default_timerange(self, query_struct: dict) -> dict:
+        """Adds default time range if not already present"""
+        if self.time_range and not query_struct.get('parameters', {}).get('eventtime_from'):
+            current_time = datetime.now()
+            start_time = current_time - timedelta(minutes=self.time_range)
+            
+            query_struct['parameters'].update({
+                'eventtime_from': start_time.strftime('%m/%d/%Y %H:%M:%S'),
+                'eventtime_to': current_time.strftime('%m/%d/%Y %H:%M:%S')
+            })
+        
+        return query_struct
 
     def parse_expression(self, pattern: Pattern):
-        queries = self._parse_expression(pattern)
-        return self._add_default_timerange_to_queries(queries)
+        """Main entry point for parsing"""
+        print(50*"*")
+        print("This is the pattern inside parse_expression")
+        print(pattern)
+        print(50*"*")
+        query_struct = self._parse_expression(pattern)
+        if query_struct is None:
+            query_struct = {"query": "", "parameters": {}}
+        return self._add_default_timerange(query_struct)
 
 
 def translate_pattern(pattern: Pattern, data_model_mapping, options):
-    time_range = options['time_range']
+    """
+    Translates STIX pattern into Securonix query format
+    Returns a dictionary containing the query and parameters
+    """
+    time_range = options.get('time_range', None)
 
-    translated_statements_lst = SecuronixQueryStringPatternTranslator(pattern, data_model_mapping, time_range)
-    translated_statements = " ".join(translated_statements_lst.queries)
-    return f"{translated_statements}"
+    print(50*"*")
+    print("This is the pattern inside translate_pattern")
+    print(pattern)
+    print(50*"*")
+
+    # Initialize translator with pattern
+    translator = SecuronixQueryStringPatternTranslator(pattern, data_model_mapping, time_range)
+    
+    # Get the translated query
+    query_struct = translator.translated
+
+    return query_struct

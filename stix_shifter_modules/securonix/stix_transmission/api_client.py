@@ -69,21 +69,28 @@ class APIClient:
         headers['Accept'] = '*/*'
         headers['Content-Type'] = 'application/json'
 
-        # Extract IP and resourcegroup from query
-        ip_match = re.search(r"sourceaddress = '([^']+)'", query)
-        resource_match = re.search(r"resourcegroupname = '([^']+)'", query)
+        # Extract eventtime parameters from the query string using regex
+        eventtime_from_match = re.search(r'eventtime>="([^"]+)"', query)
+        eventtime_to_match = re.search(r'eventtime<="([^"]+)"', query)
 
-        ip = ip_match.group(1) if ip_match else None
-        resourcegroup = resource_match.group(1) if resource_match else None
+        eventtime_from = eventtime_from_match.group(1) if eventtime_from_match else None
+        eventtime_to = eventtime_to_match.group(1) if eventtime_to_match else None
 
-        now = datetime.now()
-        past_24_hours = now - timedelta(hours=24)
+        # Clean the query by removing eventtime conditions
+        clean_query = re.sub(r'AND\s+eventtime>="\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2}:\d{2}"', '', query)
+        clean_query = re.sub(r'AND\s+eventtime<="\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2}:\d{2}"', '', clean_query)
+        
+        # If no eventtime parameters found, use default 24-hour window
+        if not eventtime_from or not eventtime_to:
+            now = datetime.now()
+            past_24_hours = now - timedelta(hours=24)
+            eventtime_from = past_24_hours.strftime('%m/%d/%Y %H:%M:%S')
+            eventtime_to = now.strftime('%m/%d/%Y %H:%M:%S')
 
         params = {
-            "query": f"index=activity AND resourcegroupname=\"{resourcegroup}\"",
-            "eventtime_from": past_24_hours.strftime('%m/%d/%Y %H:%M:%S'),
-            "eventtime_to": now.strftime('%m/%d/%Y %H:%M:%S'),
-            "sourceaddress": ip
+            "query": clean_query,
+            "eventtime_from": eventtime_from,
+            "eventtime_to": eventtime_to
         }
 
         base_url = base_url.rstrip('/')
@@ -97,7 +104,6 @@ class APIClient:
                 timeout=timeout,
                 verify=False
             )
-
 
             # Check if response is not empty
             if response.text:

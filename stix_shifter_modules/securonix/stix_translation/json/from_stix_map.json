@@ -2,81 +2,42 @@
   "ipv4-addr": {
     "fields": {
       "value": [
-        "sourceip",
-        "destinationip"
+        "sourceaddress",
+        "destinationaddress",
+        "ipaddress"
       ]
     }
   },
   "network-traffic": {
     "fields": {
-      "src_port": [
-        "sourceport"
-      ],
-      "dst_port": [
-        "destinationport"
-      ],
-      "protocols[*]": [
-        "transportprotocol"
-      ],
-      "src_ref.value": [
-        "sourceip"
-      ],
-      "dst_ref.value": [
-        "destinationip"
-      ]
+      "src_port": ["sourceport"],
+      "dst_port": ["destinationport"],
+      "protocols[*]": ["transportprotocol"],
+      "start": ["eventtime"],
+      "end": ["eventtime"]
     }
   },
-  "mac-addr": {
+  "process": {
     "fields": {
-      "value": [
-        "sourcemacaddress",
-        "destinationmacaddress"
-      ]
-    }
-  },
-  "x-oca-asset": {
-    "fields": {
-      "hostname": [
-        "hostname",
-        "devicehostname"
-      ],
       "name": [
-        "resourcename",
-        "resourcegroupname"
+        "processname",
+        "sourceprocessname",
+        "destinationprocessname"
       ],
-      "type": [
-        "resourcetype"
-      ]
+      "pid": ["processid"],
+      "command_line": ["commandline"],
+      "parent_ref.pid": ["parentprocessid"]
     }
   },
-  "x-securonix": {
+  "x-oca-event": {
     "fields": {
-      "resourcename": [
-        "resourcename"
-      ],
-      "resourcetype": [
-        "resourcetype"
-      ],
-      "resourcegroupid": [
-        "resourcegroupid"
-      ],
-      "categoryseverity": [
-        "categoryseverity"
-      ],
-      "categoryid": [
-        "categoryid"
-      ],
-      "rg_vendor": [
-        "rg_vendor"
-      ],
-      "rg_functionality": [
-        "rg_functionality"
-      ],
-      "tenantname": [
-        "tenantname"
-      ],
-      "tenantid": [
-        "tenantid"
+      "action": ["deviceaction"],
+      "outcome": ["categoryoutcome"],
+      "category": ["category"],
+      "domain": ["domain"],
+      "hostname": [
+        "devicehostname",
+        "hostname"
       ]
     }
   },
@@ -86,73 +47,7 @@
         "username",
         "accountname"
       ],
-      "display_name": [
-        "username"
-      ]
-    }
-  },
-  "process": {
-    "fields": {
-      "name": [
-        "processname",
-        "sourceprocessname"
-      ],
-      "pid": [
-        "processid"
-      ],
-      "command_line": [
-        "commandline"
-      ]
-    }
-  },
-  "x-oca-event": {
-    "fields": {
-      "action": [
-        "action"
-      ],
-      "category": [
-        "category"
-      ],
-      "description": [
-        "description"
-      ],
-      "severity": [
-        "severity",
-        "categoryseverity"
-      ],
-      "category_id": [
-        "categoryid"
-      ],
-      "resource_group_id": [
-        "resourcegroupid"
-      ],
-      "tenant_id": [
-        "tenantid"
-      ],
-      "tenant_name": [
-        "tenantname"
-      ],
-      "rg_vendor": [
-        "rg_vendor"
-      ],
-      "rg_functionality": [
-        "rg_functionality"
-      ],
-      "timeline": [
-        "timeline"
-      ],
-      "timeline_by_month": [
-        "timeline_by_month"
-      ],
-      "timeline_by_week": [
-        "timeline_by_week"
-      ],
-      "timeline_by_hour": [
-        "timeline_by_hour"
-      ],
-      "timeline_by_minute": [
-        "timeline_by_minute"
-      ]
+      "display_name": ["username"]
     }
   }
 }

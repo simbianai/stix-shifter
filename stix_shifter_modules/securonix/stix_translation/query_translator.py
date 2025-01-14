@@ -14,60 +14,38 @@ class QueryTranslator(BaseQueryTranslator):
 
     def __init__(self, options, dialect, basepath, custom_mapping=None):
         super().__init__(options, dialect, basepath, custom_mapping=custom_mapping)
-        self.supported_fields = {
-            'hostname': r"hostname = '([^']+)'",
-            'sourcemacaddress': r"sourcemacaddress = '([^']+)'",
-            'resourcename': r"resourcename = '([^']+)'",
-            'resourcetype': r"resourcetype = '([^']+)'",
-            'destinationmacaddress': r"destinationmacaddress = '([^']+)'",
-            'destinationport': r"destinationport = '(\d+)'",
-            'categoryseverity': r"categoryseverity = '([^']+)'",
-            'categoryid': r"categoryid = '([^']+)'",
-            'resourcegroupid': r"resourcegroupid = '([^']+)'",
-            'sourceport': r"sourceport = '(\d+)'",
-            'devicehostname': r"devicehostname = '([^']+)'",
-            'rg_vendor': r"rg_vendor = '([^']+)'",
-            'rg_functionality': r"rg_functionality = '([^']+)'",
-            'tenantname': r"tenantname = '([^']+)'",
-            'tenantid': r"tenantid = '([^']+)'"
-        }
-        if custom_mapping:
-            self.supported_fields.update(custom_mapping)
-
-    def _extract_field_values(self, query_string, field_pattern):
-        match = re.search(field_pattern, query_string)
-        return match.group(1) if match else None
-
-    def _get_field_value(self, query_string, field):
-        if field in self.supported_fields:
-            return self._extract_field_values(query_string, self.supported_fields[field])
-        return None
 
     def transform_antlr(self, data, antlr_parsing_object):
         logger.info("Converting STIX2 Pattern to Securonix Query")
 
-        query_string = query_constructor.translate_pattern(
+        print(50*"*")
+        print("This is the antlr_parsing_object inside transform_antlr")
+        print(antlr_parsing_object)
+        print(50*"*")
+
+        query_params = query_constructor.translate_pattern(
             antlr_parsing_object, self, self.options)
+        
+        print(50*"*")
+        print("This is the query_string inside transform_antlr")
+        print(query_params)
+        print("This is the query_string type")
+        print(type(query_params))
+        print(50*"*")
 
-        # Extract values for all supported fields
-        field_values = {}
-        for field in self.supported_fields:
-            value = self._get_field_value(query_string, field)
-            if value:
-                field_values[field] = value
+        # Extract the components from the query_params dictionary
+        base_query = query_params['query']
+        eventtime_from = query_params['parameters']['eventtime_from']
+        eventtime_to = query_params['parameters']['eventtime_to']
 
-        # Add extracted values to query string
-        for field, value in field_values.items():
-            query_string = f"{query_string}&{field}={value}"
+        # Construct the complete query string with all components
+        complete_query = f"index=activity AND {base_query} AND eventtime>=\"{eventtime_from}\" AND eventtime<=\"{eventtime_to}\""
 
-        # Handle timestamps
-        timestamp_pattern = r"START t'([^']+)' STOP t'([^']+)'"
-        match = re.search(timestamp_pattern, data)
-        if match:
-            start_time = datetime.strptime(match.group(1), '%Y-%m-%dT%H:%M:%S.%fZ')
-            end_time = datetime.strptime(match.group(2), '%Y-%m-%dT%H:%M:%S.%fZ')
-            formatted_start = start_time.strftime('%m/%d/%Y %H:%M:%S')
-            formatted_end = end_time.strftime('%m/%d/%Y %H:%M:%S')
-            query_string = f"{query_string}&eventtime_from={formatted_start}&eventtime_to={formatted_end}"
+        print(50*"*")
+        print("This is the complete_query")
+        print(complete_query)
+        print(50*"*")
 
-        return query_string
+        return complete_query
+
+
