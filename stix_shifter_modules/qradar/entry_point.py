@@ -15,7 +15,12 @@ class EntryPoint(BaseEntryPoint):
 
     def handle_custom_mapping(self, custom_mapping):
         if custom_mapping:
-            if custom_mapping.get('events_from_stix_mapping') and custom_mapping.get('events_to_stix_mapping') and custom_mapping.get('events_fields'):
+            if custom_mapping.get('events_from_stix_mapping') and custom_mapping.get('events_from_stix_mapping') != {} and \
+            custom_mapping.get('events_to_stix_mapping') and custom_mapping.get('events_to_stix_mapping') != {} and \
+            custom_mapping.get('events_fields') and custom_mapping.get('events_fields') != {}:
                 self.add_dialect(dialect='events', custom_mapping=custom_mapping)
-            if custom_mapping.get('flows_from_stix_mapping') and custom_mapping.get('flows_to_stix_mapping') and custom_mapping.get('flows_fields'):
+                
+            if custom_mapping.get('flows_from_stix_mapping') and custom_mapping.get('flows_from_stix_mapping') != {} and \
+            custom_mapping.get('flows_to_stix_mapping') and custom_mapping.get('flows_to_stix_mapping') != {} and \
+            custom_mapping.get('flows_fields') and custom_mapping.get('flows_fields') != {}:
                 self.add_dialect(dialect='flows', custom_mapping=custom_mapping)
