@@ -175,22 +175,6 @@
       "references": "user"
     }
   ],
-  "username": [
-    {
-      "key": "user-account.user_id",
-      "object": "user"
-    },
-    {
-      "key": "process.creator_user_ref",
-      "object": "proc",
-      "references": "user"
-    },
-    {
-      "key": "x-oca-event.user_ref",
-      "object": "event",
-      "references": "user"
-    }
-  ],
   "processfilename": [
     {
       "key": "process.binary_ref",

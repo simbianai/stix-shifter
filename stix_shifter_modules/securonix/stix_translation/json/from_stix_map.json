@@ -37,7 +37,7 @@
       "command_line": ["commandline", "processcommandline"],
       "parent_ref.pid": ["parentprocessid"],
       "parent_ref.name": ["parentprocessname"],
-      "creator_user_ref": ["accountname", "username"],
+      "creator_user_ref": ["accountname"],
       "binary_ref": ["processfilename", "binarypath"],
       "cwd": ["currentdirectory"],
       "created": ["processstarttime"],
@@ -67,7 +67,7 @@
   },
   "user-account": {
     "fields": {
-      "user_id": ["username", "accountname", "userid"],
+      "user_id": ["accountname", "userid"],
       "account_type": ["accounttype"],
       "display_name": ["displayname", "userdisplayname"],
       "domain": ["userdomain", "accountdomain"],
@@ -124,7 +124,7 @@
       "severity": ["severity", "eventseverity"],
       "type": ["eventtype"],
       "created": ["eventtime"],
-      "user_ref": ["username", "accountname"]
+      "user_ref": ["accountname"]
     }
   },
   "x-oca-asset": {
