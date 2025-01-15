@@ -218,10 +218,6 @@ class SecuronixQueryStringPatternTranslator:
 
     def parse_expression(self, pattern: Pattern):
         """Main entry point for parsing"""
-        print(50*"*")
-        print("This is the pattern inside parse_expression")
-        print(pattern)
-        print(50*"*")
         query_struct = self._parse_expression(pattern)
         if query_struct is None:
             query_struct = {"query": "", "parameters": {}}
@@ -234,11 +230,6 @@ def translate_pattern(pattern: Pattern, data_model_mapping, options):
     Returns a dictionary containing the query and parameters
     """
     time_range = options.get('time_range', None)
-
-    print(50*"*")
-    print("This is the pattern inside translate_pattern")
-    print(pattern)
-    print(50*"*")
 
     # Initialize translator with pattern
     translator = SecuronixQueryStringPatternTranslator(pattern, data_model_mapping, time_range)

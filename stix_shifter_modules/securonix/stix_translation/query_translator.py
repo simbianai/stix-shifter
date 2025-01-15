@@ -18,20 +18,8 @@ class QueryTranslator(BaseQueryTranslator):
     def transform_antlr(self, data, antlr_parsing_object):
         logger.info("Converting STIX2 Pattern to Securonix Query")
 
-        print(50*"*")
-        print("This is the antlr_parsing_object inside transform_antlr")
-        print(antlr_parsing_object)
-        print(50*"*")
-
         query_params = query_constructor.translate_pattern(
             antlr_parsing_object, self, self.options)
-        
-        print(50*"*")
-        print("This is the query_string inside transform_antlr")
-        print(query_params)
-        print("This is the query_string type")
-        print(type(query_params))
-        print(50*"*")
 
         # Extract the components from the query_params dictionary
         base_query = query_params['query']
@@ -40,11 +28,6 @@ class QueryTranslator(BaseQueryTranslator):
 
         # Construct the complete query string with all components
         complete_query = f"index=activity AND {base_query} AND eventtime>=\"{eventtime_from}\" AND eventtime<=\"{eventtime_to}\""
-
-        print(50*"*")
-        print("This is the complete_query")
-        print(complete_query)
-        print(50*"*")
 
         return complete_query
 
