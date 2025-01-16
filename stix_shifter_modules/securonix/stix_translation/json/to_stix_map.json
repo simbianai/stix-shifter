@@ -5,7 +5,7 @@
       "object": "src_ip"
     },
     {
-      "key": "network-traffic.src_ref",
+      "key": "network-traffic.src_ref.value",
       "object": "nt",
       "references": "src_ip"
     }
@@ -16,7 +16,7 @@
       "object": "dst_ip"
     },
     {
-      "key": "network-traffic.dst_ref",
+      "key": "network-traffic.dst_ref.value",
       "object": "nt",
       "references": "dst_ip"
     }
@@ -560,6 +560,10 @@
     {
       "key": "x-oca-asset.name",
       "object": "asset"
+    },
+    {
+      "key": "x-oca-event.host-ref",
+      "object": "event"
     }
   ],
   "sourcehostname": [
@@ -574,11 +578,19 @@
     {
       "key": "x-oca-asset.name",
       "object": "asset"
+    },
+    {
+      "key": "x-oca-event.host-ref",
+      "object": "event"
     }
   ],
   "destinationhostname": [
     {
       "key": "x-oca-event.hostname",
+      "object": "event"
+    },
+    {
+      "key": "x-oca-event.host-ref",
       "object": "event"
     },
     {
