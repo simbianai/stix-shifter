@@ -4,17 +4,26 @@
       "value": [
         "sourceaddress",
         "destinationaddress",
-        "ipaddress"
+        "ipaddress",
+        "translatedipaddress",
+        "destinationtranslatedaddress",
+        "deviceaddress"
       ]
     }
   },
   "ipv6-addr": {
     "fields": {
       "value": [
-        "sourceaddressv6",
-        "destinationaddressv6",
-        "ipaddressv6"
+        "devicecustomipv6address1",
+        "devicecustomipv6address2",
+        "devicecustomipv6address3",
+        "devicecustomipv6address4"
       ]
+    }
+  },
+  "url": {
+    "fields": {
+      "value": ["requesturl"]
     }
   },
   "network-traffic": {
@@ -22,8 +31,10 @@
       "src_port": ["sourceport"],
       "dst_port": ["destinationport"],
       "protocols[*]": ["transportprotocol", "applicationprotocol"],
-      "start": ["eventtime"],
-      "end": ["eventtime"]
+      "start": ["starttime"],
+      "end": ["endtime"],
+      "src_byte_count": ["bytesin"],
+      "dst_byte_count": ["bytesout"]
     }
   },
   "process": {
@@ -31,62 +42,69 @@
       "name": [
         "processname",
         "sourceprocessname",
-        "destinationprocessname"
+        "destinationprocessname",
+        "deviceprocessname",
+        "parentprocessname"
       ],
-      "pid": ["processid", "sourceprocessid", "destinationprocessid"],
-      "command_line": ["commandline", "processcommandline"],
+      "pid": [
+        "sourceprocessid",
+        "destinationprocessid", 
+        "deviceprocessid",
+        "parentprocessid"
+      ],
+      "command_line": ["resourcecustomfield1", "resourcecustomfield2"],
       "parent_ref.pid": ["parentprocessid"],
       "parent_ref.name": ["parentprocessname"],
       "creator_user_ref": ["accountname"],
-      "binary_ref": ["processfilename", "binarypath"],
-      "cwd": ["currentdirectory"],
+      "binary_ref": ["deviceprocessname", "processname"],
       "created": ["processstarttime"],
-      "image_ref": ["imagefilename"]
+      "cwd": ["currentdirectory"]
     }
   },
   "file": {
     "fields": {
-      "name": ["filename", "sourcefilename", "destinationfilename"],
-      "path": ["filepath", "sourcefilepath", "destinationfilepath"],
-      "hashes.MD5": ["filehash", "md5hash"],
-      "hashes.SHA-1": ["sha1hash"],
-      "hashes.SHA-256": ["sha256hash"],
-      "size": ["filesize"],
-      "created": ["filecreationtime"],
-      "modified": ["filemodifiedtime"],
+      "name": ["filename", "oldfilename"],
+      "path": ["filepath", "oldfilepath"],
+      "hashes.MD5": ["filehash", "oldfilehash"],
+      "hashes.SHA-1": ["filehash", "oldfilehash"],
+      "hashes.SHA-256": ["filehash", "oldfilehash"],
+      "size": ["filesize", "oldfilesize"],
+      "created": ["filecreatetime", "oldfilecreatetime"],
+      "modified": ["filemodificationtime", "oldfilemodificationtime"],
       "accessed": ["fileaccesstime"],
-      "parent_directory_ref": ["parentdirectory"]
+      "parent_directory_ref": ["filepath"]
     }
   },
   "directory": {
     "fields": {
-      "path": ["directorypath"],
-      "created": ["directorycreationtime"],
-      "modified": ["directorymodifiedtime"]
+      "path": ["filepath"],
+      "created": ["filecreatetime"],
+      "modified": ["filemodificationtime"]
     }
   },
   "user-account": {
     "fields": {
-      "user_id": ["accountname", "userid"],
+      "user_id": ["accountname", "sourceuserid", "destinationuserid"],
+      "account_login": ["customstring59", "customstring2"],
       "account_type": ["accounttype"],
-      "display_name": ["displayname", "userdisplayname"],
-      "domain": ["userdomain", "accountdomain"],
-      "privileges": ["privileges", "accountprivileges"],
+      "display_name": ["sourceusername", "destinationusername"],
+      "domain": ["sourcentdomain", "destinationntdomain"],
+      "privileges": ["sourceuserprivileges", "destinationuserprivileges"],
       "created": ["accountcreationtime"]
     }
   },
   "windows-registry-key": {
     "fields": {
-      "key": ["registrykey", "registrykeypath"],
-      "values[*].name": ["registryvaluename"],
-      "values[*].data": ["registryvaluedata"],
-      "modified": ["registrymodifiedtime"]
+      "key": ["registrykey"],
+      "values[*].name": ["registrykey"],
+      "values[*].data": ["registryvalue"],
+      "modified": ["filemodificationtime"]
     }
   },
   "email-addr": {
     "fields": {
-      "value": ["emailaddress", "sourceemailaddress", "destinationemailaddress"],
-      "display_name": ["emaildisplayname"]
+      "value": ["emailsender", "emailrecipient"],
+      "display_name": ["emailsender", "emailrecipient"]
     }
   },
   "email-message": {
@@ -94,53 +112,49 @@
       "subject": ["emailsubject"],
       "sender_ref": ["emailsender"],
       "to_refs": ["emailrecipient"],
-      "cc_refs": ["emailccrecipient"],
-      "body": ["emailbody"],
-      "additional_header_fields.Reply-To": ["emailreplyto"]
+      "cc_refs": ["emailrecipient"],
+      "body": ["message"],
+      "additional_header_fields.Reply-To": ["emailsender"]
     }
   },
   "artifact": {
     "fields": {
-      "payload_bin": ["payloaddata"],
-      "mime_type": ["payloadtype"],
-      "hashes.MD5": ["payloadhash"]
+      "mime_type": ["filetype", "oldfiletype"],
+      "hashes.MD5": ["filehash", "oldfilehash"]
     }
   },
   "domain-name": {
     "fields": {
-      "value": ["domain", "sourcedomain", "destinationdomain"]
+      "value": [
+        "destinationdnsdomain",
+        "sourcednsdomain",
+        "devicednsdomain",
+        "destinationntdomain"
+      ]
     }
   },
   "x-oca-event": {
     "fields": {
-      "action": ["deviceaction", "eventaction"],
-      "outcome": ["categoryoutcome", "eventoutcome"],
-      "category": ["category", "eventcategory"],
-      "domain": ["domain"],
-      "hostname": ["devicehostname", "hostname"],
-      "process_id": ["processid"],
-      "process_name": ["processname"],
-      "provider": ["resourcegroupname"],
-      "severity": ["severity", "eventseverity"],
+      "action": ["deviceaction", "eventoutcome"],
+      "category": ["categoryobject", "categorybehavior"],
+      "domain": ["destinationdnsdomain", "sourcednsdomain"],
+      "hostname": ["devicehostname", "sourcehostname", "destinationhostname"],
+      "process_id": ["sourceprocessid", "destinationprocessid", "deviceprocessid"],
+      "process_name": ["processname", "sourceprocessname", "destinationprocessname"],
+      "provider": ["sourceservicename", "destinationservicename"],
+      "severity": ["deviceseverity"],
       "type": ["eventtype"],
-      "created": ["eventtime"],
+      "created": ["starttime"],
       "user_ref": ["accountname"]
     }
   },
   "x-oca-asset": {
     "fields": {
-      "hostname": ["resourcehostname", "devicehostname", "hostname"],
-      "ip_refs": ["sourceaddress", "destinationaddress"],
-      "mac_refs": ["sourcemacaddress", "destinationmacaddress", "macaddress"],
-      "type": ["assettype", "resourcetype"],
-      "name": ["assetname", "resourcename", "hostname"],
-      "os": ["assetname", "resourcename", "hostname"],
-      "os_name": ["assetname", "resourcename", "hostname"],
-      "os_version": ["assetname", "resourcename", "hostname"],
-      "architecture": ["systemarchitecture"],
-      "vendor": ["assetvendor"],
-      "version": ["assetversion"],
-      "domain": ["assetdomain"]
+      "hostname": ["devicehostname", "sourcehostname", "destinationhostname"],
+      "ip_refs": ["sourceaddress", "destinationaddress", "ipaddress"],
+      "mac_refs": ["sourcemacaddress", "destinationmacaddress", "devicemacaddress"],
+      "name": ["devicehostname", "sourcehostname", "destinationhostname"],
+      "domain": ["destinationdnsdomain", "sourcednsdomain", "devicednsdomain"]
     }
   }
 }
