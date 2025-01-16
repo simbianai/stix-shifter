@@ -30,6 +30,8 @@
     "fields": {
       "src_port": ["sourceport"],
       "dst_port": ["destinationport"],
+      "src_ref.value": ["sourceaddress"],
+      "dst_ref.value": ["destinationaddress"],
       "protocols[*]": ["transportprotocol", "applicationprotocol"],
       "start": ["starttime"],
       "end": ["endtime"],
@@ -139,6 +141,7 @@
       "category": ["categoryobject", "categorybehavior"],
       "domain": ["destinationdnsdomain", "sourcednsdomain"],
       "hostname": ["devicehostname", "sourcehostname", "destinationhostname"],
+      "host-ref": ["devicehostname", "sourcehostname", "destinationhostname"],
       "process_id": ["sourceprocessid", "destinationprocessid", "deviceprocessid"],
       "process_name": ["processname", "sourceprocessname", "destinationprocessname"],
       "provider": ["sourceservicename", "destinationservicename"],
