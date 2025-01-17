@@ -37,6 +37,7 @@ class APIClient:
         self._token_time = datetime.now() - timedelta(days=7)
 
     async def ping_box(self, client, base_url, auth_headers, headers, timeout):
+        base_url = base_url.rstrip('/')
         token = await self.get_token(client, base_url, auth_headers, timeout)
         headers['token'] = token
         params = {"query": "index=violation"}
@@ -122,6 +123,7 @@ class APIClient:
             raise e
 
     async def get_token(self, client, base_url, auth_headers, timeout) -> str:
+        base_url = base_url.rstrip('/')
         if (datetime.now() - self._token_time) >= timedelta(minutes=30):
             try:
                 response = requests.get(
