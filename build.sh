@@ -69,7 +69,8 @@ stix_shifter_modules_tanium-${VERSION}-py2.py3-none-any.whl
 stix_shifter_modules_trellix_endpoint_security_hx-${VERSION}-py2.py3-none-any.whl
 stix_shifter_modules_trendmicro_vision_one-${VERSION}-py2.py3-none-any.whl
 stix_shifter_modules_vectra-${VERSION}-py2.py3-none-any.whl
-stix_shifter_utils-${VERSION}-py2.py3-none-any.whl"
+stix_shifter_utils-${VERSION}-py2.py3-none-any.whl
+stix_shifter_modules_securonix-${VERSION}-py2.py3-none-any.whl"
 
 while IFS= read -r file; do
   rm -f dist/$file
