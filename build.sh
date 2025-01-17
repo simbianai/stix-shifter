@@ -58,6 +58,7 @@ stix_shifter_modules_reversinglabs-${VERSION}-py2.py3-none-any.whl
 stix_shifter_modules_rhacs-${VERSION}-py2.py3-none-any.whl
 stix_shifter_modules_secretserver-${VERSION}-py2.py3-none-any.whl
 stix_shifter_modules_security_advisor-${VERSION}-py2.py3-none-any.whl
+stix_shifter_modules_securonix-${VERSION}-py2.py3-none-any.whl
 stix_shifter_modules_sentinelone-${VERSION}-py2.py3-none-any.whl
 stix_shifter_modules_splunk-${VERSION}-py2.py3-none-any.whl
 stix_shifter_modules_stix_bundle-${VERSION}-py2.py3-none-any.whl
