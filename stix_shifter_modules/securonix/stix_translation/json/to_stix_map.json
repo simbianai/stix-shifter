@@ -5,7 +5,7 @@
       "object": "src_ip"
     },
     {
-      "key": "network-traffic.src_ref.value",
+      "key": "network-traffic.src_ref",
       "object": "nt",
       "references": "src_ip"
     }
@@ -16,7 +16,7 @@
       "object": "dst_ip"
     },
     {
-      "key": "network-traffic.dst_ref.value",
+      "key": "network-traffic.dst_ref",
       "object": "nt",
       "references": "dst_ip"
     }
