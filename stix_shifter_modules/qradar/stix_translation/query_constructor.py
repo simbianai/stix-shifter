@@ -452,6 +452,7 @@ def _format_translated_queries(query_array):
 def translate_pattern(pattern: Pattern, data_model_mapping, options):
     result_limit = options["result_limit"]
     time_range = options["time_range"]
+    domain_id = options.get("domain_id") if options.get("domain_id") else None
     execution_time_ms = os.getenv("LOG_SEARCH_EXECUTION_TIME_LIMIT", "60000")
 
     translated_where_statements = AqlQueryStringPatternTranslator(
@@ -463,17 +464,32 @@ def translate_pattern(pattern: Pattern, data_model_mapping, options):
 
     # Method 1: Using PARAMETERS
     def build_query_with_parameters(
-        select_stmt, dialect, where_stmt, limit=None, time_range=None
+        select_stmt, dialect, where_stmt, limit=None, time_range=None, domain_id=None
     ):
+        # Build the WHERE clause
+        where_conditions = []
+        # Add domain constraint if provided
+        try:
+            domain_id = int(domain_id)
+        except ValueError:
+            domain_id = domain_id
+        if domain_id is not None:
+            where_conditions.append(f"domainid = {domain_id}")
+        # Add original where statement if it's not empty or '1=0'
+        if where_stmt and where_stmt != "1=0":
+            where_conditions.append(f"{where_stmt}")
+        # Combine all conditions with AND
+        final_where = " AND ".join(where_conditions) if where_conditions else "1=1"
+
         if limit and time_range:
             return (
                 f"SELECT {select_stmt} FROM {dialect} "
-                f"WHERE {where_stmt} limit {limit} last {time_range} minutes\n"
+                f"WHERE {final_where} limit {limit} last {time_range} minutes\n"
                 f"PARAMETERS EXECUTIONTIMELIMIT={execution_time_ms}"
             )
         else:
             return (
-                f"SELECT {select_stmt} FROM {dialect} WHERE {where_stmt}\n"
+                f"SELECT {select_stmt} FROM {dialect} WHERE {final_where}\n"
                 f"PARAMETERS EXECUTIONTIMELIMIT={execution_time_ms}"
             )
 
@@ -486,7 +502,10 @@ def translate_pattern(pattern: Pattern, data_model_mapping, options):
         if has_start_stop:
             queries.append(
                 build_query(
-                    select_statement, data_model_mapping.dialect, where_statement
+                    select_statement,
+                    data_model_mapping.dialect,
+                    where_statement,
+                    domain_id=domain_id,
                 )
             )
         else:
@@ -497,6 +516,7 @@ def translate_pattern(pattern: Pattern, data_model_mapping, options):
                     where_statement,
                     result_limit,
                     time_range,
+                    domain_id=domain_id,
                 )
             )
 

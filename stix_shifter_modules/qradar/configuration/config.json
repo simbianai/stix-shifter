@@ -32,12 +32,16 @@
             },
             "unmapped_fallback": {
                 "default": true
+            },
+            "domain_id": {
+                "type": "number",
+                "optional": true
             }
         }
     },
     "configuration": {
         "auth": {
-            "type" : "fields",
+            "type": "fields",
             "sec": {
                 "type": "password",
                 "previous": "configuration.auth.SEC"
