@@ -555,7 +555,7 @@
     },
     {
       "key": "x-oca-asset.hostname",
-      "object": "asset"
+      "object": "host"
     },
     {
       "key": "x-oca-asset.name",
@@ -573,7 +573,7 @@
     },
     {
       "key": "x-oca-asset.hostname",
-      "object": "asset"
+      "object": "host"
     },
     {
       "key": "x-oca-asset.name",
@@ -595,7 +595,7 @@
     },
     {
       "key": "x-oca-asset.hostname",
-      "object": "asset"
+      "object": "host"
     },
     {
       "key": "x-oca-asset.name",
@@ -629,19 +629,49 @@
   "sourcemacaddress": [
     {
       "key": "x-oca-asset.mac_refs",
-      "object": "asset"
+      "object": "host"
     }
   ],
   "destinationmacaddress": [
     {
       "key": "x-oca-asset.mac_refs",
-      "object": "asset"
+      "object": "host"
     }
   ],
   "devicemacaddress": [
     {
       "key": "x-oca-asset.mac_refs",
-      "object": "asset"
+      "object": "host"
+    }
+  ],
+  "customstring40": [
+    {
+      "key": "x-oca-asset.hostname",
+      "object": "host"
+    }
+  ],
+  "customstring45": [
+    {
+      "key": "x-oca-asset.hostname",
+      "object": "host"
+    }
+  ],
+  "customstring64": [
+    {
+      "key": "x-oca-asset.hostname",
+      "object": "host"
+    }
+  ],
+  "customstring58": [
+    {
+      "key": "x-oca-asset.hostname",
+      "object": "host"
+    }
+  ],
+  "customstring43": [
+    {
+      "key": "x-oca-asset.os_version",
+      "object": "host"
     }
   ]
 }

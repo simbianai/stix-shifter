@@ -157,7 +157,9 @@
       "ip_refs": ["sourceaddress", "destinationaddress", "ipaddress"],
       "mac_refs": ["sourcemacaddress", "destinationmacaddress", "devicemacaddress"],
       "name": ["devicehostname", "sourcehostname", "destinationhostname"],
-      "domain": ["destinationdnsdomain", "sourcednsdomain", "devicednsdomain"]
+      "domain": ["destinationdnsdomain", "sourcednsdomain", "devicednsdomain"],
+      "os_name": ["customstring40", "customstring45", "customstring64", "customstring58"],
+      "os_version": ["customstring43"]
     }
   }
 }
