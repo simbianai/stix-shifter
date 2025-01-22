@@ -644,36 +644,6 @@
       "object": "host"
     }
   ],
-  "customstring40": [
-    {
-      "key": "x-oca-asset.hostname",
-      "object": "host"
-    }
-  ],
-  "customstring45": [
-    {
-      "key": "x-oca-asset.hostname",
-      "object": "host"
-    }
-  ],
-  "customstring64": [
-    {
-      "key": "x-oca-asset.hostname",
-      "object": "host"
-    }
-  ],
-  "customstring58": [
-    {
-      "key": "x-oca-asset.hostname",
-      "object": "host"
-    }
-  ],
-  "customstring43": [
-    {
-      "key": "x-oca-asset.os_version",
-      "object": "host"
-    }
-  ],
   "datetime": [
     {
       "key": "first_observed",
