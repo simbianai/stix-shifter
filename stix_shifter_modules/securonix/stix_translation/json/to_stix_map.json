@@ -673,5 +673,15 @@
       "key": "x-oca-asset.os_version",
       "object": "host"
     }
+  ],
+  "datetime": [
+    {
+      "key": "first_observed",
+      "transformer": "EpochToTimestamp"
+    },
+    {
+      "key": "last_observed",
+      "transformer": "EpochToTimestamp"
+    }
   ]
 }
