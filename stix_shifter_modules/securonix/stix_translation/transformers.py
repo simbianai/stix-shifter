@@ -5,10 +5,10 @@ import json
 import re
 from typing import Any, Optional, Union
 
+logger = logger.set_logger(__name__)
+
 
 class SecuronixToStixTransformer(ValueTransformer):
-    def __init__(self):
-        self.logger = logger.set_logger(__name__)
 
     def transform(self, data: Any) -> Optional[Any]:
         """Transform Securonix data to STIX format"""
@@ -88,3 +88,16 @@ class SecuronixToStixTransformer(ValueTransformer):
         """Check if string is an IP address"""
         ip_pattern = r'^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
         return bool(re.match(ip_pattern, value.strip()))
+
+class EpochToTimestamp(ValueTransformer):
+    """A value transformer for converting Unix epoch timestamps to ISO format"""
+    
+    @staticmethod
+    def transform(epoch):
+        try:
+            # Convert milliseconds to seconds if timestamp is too large
+            epoch_seconds = int(epoch) / 1000 if len(str(int(epoch))) > 10 else int(epoch)
+            return (datetime.fromtimestamp(epoch_seconds, timezone.utc)
+                    .strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z')
+        except ValueError:
+            logger.error("Cannot convert epoch value {} to timestamp".format(epoch))
