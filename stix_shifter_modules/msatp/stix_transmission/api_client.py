@@ -39,6 +39,6 @@ class APIClient:
         
         credential = ClientSecretCredential(self.tenant_id, self.client_id, self.client_secret)
         client = LogsQueryClient(credential)
-        response = client.query_workspace(self.workspace_id, query_expression, timespan=datetime.timedelta(days=100))
+        response = client.query_workspace(self.workspace_id, query_expression, timespan=datetime.timedelta(days=100), server_timeout=60)
         return response
         
